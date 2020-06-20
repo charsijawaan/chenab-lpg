@@ -1,0 +1,34 @@
+{
+  "name": "chenab-lpg",
+  "description": "Software for Chenab Gas Agenvy",
+  "version": "1.0.0",
+  "author": "Muhammad Usama",
+  "copyright": "© Chenab Gas Agenvy",
+  "license": "",
+  "main": "app/app.js",
+  "build": {
+    "files": [
+      "app/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ]
+  },
+  "scripts": {
+    "postinstall": "install-app-deps",
+    "start": "electron .",
+    "build": "electron-packager .",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager .",
+    "package-linux": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/icon.png --prune=true --out=release-builds",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "build"
+  },
+  "dependencies": {
+    "sqlite3": "^4.0.9"
+  },
+  "devDependencies": {
+    "electron": "^5.0.6",
+    "electron-builder": "^21.0.15",
+    "electron-packager": "^14.2.1"
+  }
+}
