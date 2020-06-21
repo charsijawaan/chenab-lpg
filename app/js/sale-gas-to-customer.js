@@ -12,7 +12,7 @@
                     <div style="text-align: center;">
                         <div class="mt-2">
                             <label for="inp" class="inp">
-                            <input type="text" placeholder="&nbsp;" required id="customer-name-field" onkeydown="getCustomersFromDatabase()">
+                            <input type="text" placeholder="&nbsp;" required id="customer-name-field-sale-gas" onkeydown="getCustomersFromDatabase()">
                             <span class="label">Enter Customer Name</span>
                             <span class="focus-bg"></span>
                             </label>                
@@ -118,14 +118,13 @@
                     }                          
                 })
             })
-
         }
     })
  }
 
  getCustomersFromDatabase = () => {
     $(`#select-customer-div-wrapper`).html('')
-    let name = $('#customer-name-field').val()
+    let name = $('#customer-name-field-sale-gas').val()
     getCustomersByName(name, (err, names)=>{
         for(let i = 0; i < names.length; i++) {
             $(`#select-customer-div-wrapper`).append(`
@@ -142,12 +141,13 @@
  selectCustomer = (customerSpan) => {
      let customerID = $(customerSpan).attr('data-id')
      let customerName = $(customerSpan).attr('data-name')
-     $('#customer-name-field').val(customerName)
+     $('#customer-name-field-sale-gas').val(customerName)
      $(`#select-customer-div-wrapper`).html('')
  }
 
 
  handleSaleGasCheckBoxes = (weight) => {
+    calculateTotalAndProfit()
     if($(`#${weight}kg-sale-gas-checkbox`).prop('checked')) {
         $(`#sale-gas-${weight}kg-cylinders`).prop('disabled', false)
         $(`#sale-gas-${weight}kg-gas-rate`).prop('disabled', false)
@@ -166,6 +166,8 @@
         let profit = 0
         let costPrice = 0
         for(let i = 0; i < cylinderTypes.length; i++) {
+            if(!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')))
+                continue
             total += Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val())  * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
             costPrice += Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
         }
@@ -180,5 +182,84 @@
  }
 
  saleGasToCustomer = () => {
-     console.log('X')
+    let customerName = $('#customer-name-field-sale-gas').val()
+    let total = 0
+    let profit = 0
+    if(customerName === '') {
+        let options = {
+            type: 'info',
+            buttons: ['Okay'],
+            message: `Enter customer name first`,
+            normalizeAccessKeys: true
+        }
+        dialog.showMessageBox(options, i => {
+            if (i == 0) {
+                return
+            }
+        })
+        return
+    }
+    getCustomer(customerName, (err, customerData)=>{
+        if(customerData.length < 1) {
+            let options = {
+                type: 'info',
+                buttons: ['Okay'],
+                message: `No customer with this name was found`,
+                normalizeAccessKeys: true
+            }
+            dialog.showMessageBox(options, i => {
+                if (i == 0) {
+                    return
+                }
+            })
+        }
+        else {
+            getAllTypesOfCylinders((err, cylinderTypes)=>{
+                let total = 0
+                let profit = 0
+                let costPrice = 0
+                for(let i = 0; i < cylinderTypes.length; i++) {
+                    if(!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')))
+                        continue
+                    total += Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val())  * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                    costPrice += Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                }
+                let date = new Date()
+                profit = total - costPrice
+                let plantID = $('#select-plant-sale-gas-to-customer-div').children('option:selected').val()
+                insertIntoSales(customerData[0].customer_id, date.getTime(), total, profit, costPrice, plantID, (err)=>{
+                    getLastSalesID((err, lastRow)=>{
+                        for(let i = 0; i < cylinderTypes.length; i++) {
+                            if(!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')))
+                                continue
+                                let numberOfCylinders =  Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                let subTotal = Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val())  * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                let subCost = Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                let subProfit = subTotal - subCost
+                                insertIntoSalesDetails(lastRow.sales_id, cylinderTypes[i].weight, numberOfCylinders, subTotal, subCost, subProfit, plantID, (err)=>{
+                                    let options = {
+                                        type: 'info',
+                                        buttons: ['Okay'],
+                                        message: `Cylinder sold to customer`,
+                                        normalizeAccessKeys: true
+                                    }
+                                    dialog.showMessageBox(options, i => {
+                                        if (i == 0) {
+                                            return
+                                        }
+                                    })
+                                    resetSaleGasDiv()
+                                    updateMainWindowGUI()                                    
+                                })
+                        }
+                    })
+                    
+                })
+            })
+        }
+    })
+ }
+
+ resetSaleGasDiv = () => {
+    $(`#sale-gas-to-customer-div`).html('')
  }

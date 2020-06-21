@@ -143,8 +143,9 @@ getThisMonthPaymentHistory = (cb) => {
         month = '0' + month
     }
     db.all(`SELECT PlantTransactions.*,strftime('%m', datetime(PlantTransactions.date/1000, 'unixepoch'))
-            AS month, Plants.plant_name FROM PlantTransactions 
-            INNER JOIN Plants ON PlantTransactions.plant_id = Plants.plant_id WHERE month = '${month}' ORDER BY date DESC`, [], (err, data) => {
+            AS month, Plants.plant_name FROM PlantTransactions INNER JOIN Plants ON 
+            PlantTransactions.plant_id = Plants.plant_id WHERE month = '${month}' 
+            ORDER BY date DESC`, [], (err, data) => {
         if(err) {
             console.log(err.message)
         }
@@ -158,7 +159,8 @@ getSpecificPaymentHistory = (fromDate, toDate, cb) => {
     db.all(`SELECT PlantTransactions.*, Plants.plant_name FROM PlantTransactions 
             INNER JOIN Plants ON PlantTransactions.plant_id = Plants.plant_id
             WHERE strftime('%Y-%m-%d ', datetime(PlantTransactions.date/1000, 'unixepoch')) >= '${fromDate}' 
-            AND strftime('%Y-%m-%d ', datetime(PlantTransactions.date/1000, 'unixepoch')) <= '${toDate}' ORDER BY date DESC`, [], (err, data) => {
+            AND strftime('%Y-%m-%d ', datetime(PlantTransactions.date/1000, 'unixepoch')) <= '${toDate}' 
+            ORDER BY date DESC`, [], (err, data) => {
         if(err) {
             console.log(err.message)
         }
@@ -384,5 +386,51 @@ function getAvailableStockByPlantID(cylinderWeight, plantID, cb) {
         else {
             cb(null, data)
         }
+    })
+}
+
+function getCustomer(customerName, cb) {
+    db.all(`SELECT * FROM Customers WHERE customer_name = '${customerName}'`, [], (err, customerData) => {
+        if(err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, customerData)
+        }
+    })
+}
+
+function insertIntoSales(customerID, date, total, profit, costPrice, plantID, cb) {
+    db.run(`INSERT INTO Sales('customer_id','date','total','profit','cost_price','plant_id') 
+            VALUES(?,?,?,?,?,?)`, [customerID, date, total, profit, costPrice, plantID], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null,res)
+        }        
+    })
+}
+
+function getLastSalesID(cb) {
+    db.get(`SELECT * FROM Sales WHERE sales_id = (SELECT MAX(sales_id) FROM Sales)`, [], (err, data) => {
+        if(err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function insertIntoSalesDetails(salesID, cylinderWeight, numberOfCylinders, subTotal, subCost, subProfit, plantID, cb) {
+    db.run(`INSERT INTO SalesDetails('sales_id','cylinder_weight','number_of_cylinders','sub_total','sub_cost', 'sub_profit', 'plant_id') 
+            VALUES(?,?,?,?,?,?,?)`, [salesID, cylinderWeight, numberOfCylinders, subTotal, subCost, subProfit, plantID], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null,res)
+        }        
     })
 }

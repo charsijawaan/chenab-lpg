@@ -132,6 +132,8 @@ buyGasFromPlant = () => {
         else {
             let total = 0
             for(let i = 0; i < cylinderTypes.length; i++) {
+                if(!($(`#${cylinderTypes[i].weight}kg-buy-gas-checkbox`).prop('checked')))
+                    continue
                 let gasRate = $(`#buy-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()
                 let numberOfCylinders = $(`#buy-gas-${cylinderTypes[i].weight}kg-cylinders`).val()            
                 total = total + (Number(gasRate) * Number(numberOfCylinders))
@@ -141,6 +143,8 @@ buyGasFromPlant = () => {
             insertIntoFillings(date.getTime(), total, plantID, (err)=>{
                 getLastFillingsID((err, lastRow)=>{
                     for(let i = 0; i < cylinderTypes.length; i++) {
+                        if(!($(`#${cylinderTypes[i].weight}kg-buy-gas-checkbox`).prop('checked')))
+                            continue
                         let gasRate = $(`#buy-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()
                         let numberOfCylinders = $(`#buy-gas-${cylinderTypes[i].weight}kg-cylinders`).val()
                         let subTotal = Number(gasRate) * Number(numberOfCylinders) 

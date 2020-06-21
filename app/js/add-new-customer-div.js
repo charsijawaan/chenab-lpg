@@ -24,7 +24,7 @@ showAddNewCustomerDiv = () => {
 
 addNewCustomer = () => {
     let newCustomerName = $(`#add-new-customer-field`).val()
-    addNewCustomerInDatabase(newCustomerName, (err)=>{
+    addNewCustomerInDatabase(newCustomerName.toLowerCase(), (err)=>{
         $(`#add-new-customer-field`).val('')
         let options = {
             type: 'info',

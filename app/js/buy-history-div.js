@@ -140,10 +140,6 @@ $('#edit-buy-history-table-modal').on('show.bs.modal', (e) => {
     })    
 })
 
-// handles fields of buy history div
-// $('#view-buy-history-date-checkbox').change(() => {    
-// })
-
 enablePaymentHistoryDates = () => {
     if($('#view-buy-history-date-checkbox').prop('checked')) {
         $('#view-buy-history-from').prop('disabled', false)
