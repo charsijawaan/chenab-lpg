@@ -3,7 +3,7 @@ let db = require('./../database/databaseConnection')
 // get cylinder types
 getAllTypesOfCylinders = (cb) => {
     db.all(`SELECT * FROM CylinderTypes`, [], (err, cylinderTypes) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -15,7 +15,7 @@ getAllTypesOfCylinders = (cb) => {
 // stock functions
 getTotalNumberOfCylindersInStock = (cylinderID, cb) => {
     db.get(`SELECT SUM(number_of_cylinders) as number_of_cylinders FROM Stock WHERE cylinder_id = ${cylinderID}`, [], (err, row) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -53,7 +53,7 @@ updateStock = (cylinderID, numberOfCylinders, weight, buyRate, plantID, cb) => {
             console.log(err.message)
         }
         else {
-            if(data.length == 0) {
+            if (data.length == 0) {
                 db.run(`INSERT INTO Stock('cylinder_id', 'number_of_cylinders', 'cylinder_weight', 'buy_rate', 'plant_id') 
                         VALUES(?,?,?,?,?)`, [cylinderID, numberOfCylinders, weight, buyRate, plantID], (err, res) => {
                     if (err) {
@@ -82,7 +82,7 @@ updateStock = (cylinderID, numberOfCylinders, weight, buyRate, plantID, cb) => {
 getAllBuyHistory = (cb) => {
     db.all(`SELECT fillings_id, strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch')) AS date,
             total_price FROM Fillings ORDER BY Fillings.date DESC`, [], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -100,7 +100,7 @@ getThisMonthBuyHistory = (cb) => {
     db.all(`SELECT fillings_id, strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch'))
              as date, strftime('%m', datetime(Fillings.date/1000, 'unixepoch')) as month,
              total_price FROM Fillings WHERE month = '${month}' ORDER BY Fillings.date DESC`, [], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -109,12 +109,12 @@ getThisMonthBuyHistory = (cb) => {
     })
 }
 
-getSpecificBuyHistory = (fromDate, toDate, cb) => {        
+getSpecificBuyHistory = (fromDate, toDate, cb) => {
     db.all(`SELECT fillings_id, strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch')) 
             as date, total_price FROM Fillings WHERE strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch'))
              >= '${fromDate}' AND strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch'))
               <= '${toDate}' ORDER BY Fillings.date DESC`, [], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -133,7 +133,7 @@ getAllPaymentHistory = (cb) => {
         else {
             cb(null, data)
         }
-    });       
+    });
 }
 
 getThisMonthPaymentHistory = (cb) => {
@@ -146,7 +146,7 @@ getThisMonthPaymentHistory = (cb) => {
             AS month, Plants.plant_name FROM PlantTransactions INNER JOIN Plants ON 
             PlantTransactions.plant_id = Plants.plant_id WHERE month = '${month}' 
             ORDER BY date DESC`, [], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -161,7 +161,7 @@ getSpecificPaymentHistory = (fromDate, toDate, cb) => {
             WHERE strftime('%Y-%m-%d ', datetime(PlantTransactions.date/1000, 'unixepoch')) >= '${fromDate}' 
             AND strftime('%Y-%m-%d ', datetime(PlantTransactions.date/1000, 'unixepoch')) <= '${toDate}' 
             ORDER BY date DESC`, [], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -173,7 +173,7 @@ getSpecificPaymentHistory = (fromDate, toDate, cb) => {
 // plant money functions
 getTotalPlantMoney = (plantID, cb) => {
     db.get(`SELECT * FROM PlantMoney WHERE plant_id = ${plantID}`, [], (err, row) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -186,7 +186,7 @@ increasePlantMoney = (totalPrice, plantID, cb) => {
     db.run('UPDATE PlantMoney SET total_plant_money = total_plant_money + ? WHERE plant_id = ?', [totalPrice, plantID], (err, res) => {
         if (err) {
             console.log(err.message)
-        }                
+        }
         else {
             cb(null, res)
         }
@@ -211,14 +211,14 @@ function insertIntoFillings(date, totalPrice, plantID, cb) {
             console.log(err.message)
         }
         else {
-            cb(null,res)
-        }        
+            cb(null, res)
+        }
     })
 }
 
 function getLastFillingsID(cb) {
     db.get(`SELECT * FROM Fillings WHERE fillings_id = (SELECT MAX(fillings_id) FROM Fillings)`, [], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -236,12 +236,12 @@ function insertIntoPlantTransactions(amountToPay, date, plantID, cb) {
         else {
             cb(null, res)
         }
-    });       
+    });
 }
 
 function getPlantTransactionByID(id, cb) {
     db.get(`SELECT * FROM PlantTransactions WHERE transaction_id = ?`, [id], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -258,7 +258,7 @@ function updatePlantTransaction(id, newAmount, cb) {
                 console.log(err.message)
             }
             else {
-                if(oldAmount > newAmount) {
+                if (oldAmount > newAmount) {
                     increasePlantMoney((oldAmount - newAmount), id, (err, res) => {
 
                     })
@@ -272,12 +272,12 @@ function updatePlantTransaction(id, newAmount, cb) {
             }
         })
     })
-    
+
 }
 
 function getFIllingsDetailsByID(id, cb) {
     db.all(`SELECT * FROM FillingsDetails WHERE fillings_id = ?`, [id], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -294,7 +294,7 @@ function insertIntoFillingsDetails(id, gasRate, numberOfCylinders, totalPrice, c
         }
         else {
             cb(null, res)
-        }        
+        }
     })
 }
 
@@ -312,7 +312,7 @@ function updateFillings(id, cb) {
 
 function getFillingsTotalPriceByID(id, cb) {
     db.all(`SELECT SUM(total_price) AS total_price, fillings_id FROM Fillings WHERE fillings_id = ${id} GROUP BY fillings_id`, [], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -335,7 +335,7 @@ function updateFillingsDetails(id, gasRate, numberOfCylinders, subTotal, weight,
 
 function getAllPlants(cb) {
     db.all(`SELECT * FROM Plants`, [], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -351,13 +351,13 @@ function addNewCustomerInDatabase(customerName, cb) {
         }
         else {
             cb(null, res)
-        }        
+        }
     })
-} 
+}
 
-function getCustomersByName(customerName ,cb) {
+function getCustomersByName(customerName, cb) {
     db.all(`SELECT * FROM Customers WHERE customer_name LIKE '${customerName}%'`, [], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -368,7 +368,7 @@ function getCustomersByName(customerName ,cb) {
 
 function getAvailableStock(cylinderWeight, cb) {
     db.all(`SELECT * FROM Stock WHERE cylinder_weight = ${cylinderWeight} AND number_of_cylinders != 0`, [], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -380,7 +380,19 @@ function getAvailableStock(cylinderWeight, cb) {
 function getAvailableStockByPlantID(cylinderWeight, plantID, cb) {
     db.all(`SELECT * FROM Stock WHERE cylinder_weight = ${cylinderWeight} AND number_of_cylinders != 0
             AND plant_id = ${plantID}`, [], (err, data) => {
-        if(err) {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getAvailableStockByPlantIDandBuyRate(cylinderWeight, plantID, buyRate, cb) {
+    db.all(`SELECT * FROM Stock WHERE cylinder_weight = ${cylinderWeight} AND number_of_cylinders != 0
+            AND plant_id = ${plantID} AND buy_rate = ${buyRate}`, [], (err, data) => {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -391,7 +403,7 @@ function getAvailableStockByPlantID(cylinderWeight, plantID, cb) {
 
 function getCustomer(customerName, cb) {
     db.all(`SELECT * FROM Customers WHERE customer_name = '${customerName}'`, [], (err, customerData) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -407,14 +419,14 @@ function insertIntoSales(customerID, date, total, profit, costPrice, plantID, cb
             console.log(err.message)
         }
         else {
-            cb(null,res)
-        }        
+            cb(null, res)
+        }
     })
 }
 
 function getLastSalesID(cb) {
     db.get(`SELECT * FROM Sales WHERE sales_id = (SELECT MAX(sales_id) FROM Sales)`, [], (err, data) => {
-        if(err) {
+        if (err) {
             console.log(err.message)
         }
         else {
@@ -430,7 +442,7 @@ function insertIntoSalesDetails(salesID, cylinderWeight, numberOfCylinders, subT
             console.log(err.message)
         }
         else {
-            cb(null,res)
-        }        
+            cb(null, res)
+        }
     })
 }

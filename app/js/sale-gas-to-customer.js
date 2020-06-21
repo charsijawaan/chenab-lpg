@@ -1,9 +1,9 @@
- showSaleGasToCustomerDiv = () => {
+showSaleGasToCustomerDiv = () => {
     hideAllDivs()
     $(`#sale-gas-to-customer-div`).html('')
-    
-    getAllTypesOfCylinders((err, cylinderTypes)=> {
-        getAllPlants((err, allPlants)=>{
+
+    getAllTypesOfCylinders((err, cylinderTypes) => {
+        getAllPlants((err, allPlants) => {
             $(`#sale-gas-to-customer-div`).append(`
                 <div style="text-align: center;">
                     <h2>Sale Gas</h2>
@@ -29,8 +29,8 @@
             str += `
                 <center>
                     <select name="plant" id="select-plant-sale-gas-to-customer-div" onchange="updateSaleGasToCustomerGUI()">`
-            for(let i = 0; i < allPlants.length; i++) {
-                str += `<option value="${allPlants[i].plant_id}">${allPlants[i].plant_name}</option>`                
+            for (let i = 0; i < allPlants.length; i++) {
+                str += `<option value="${allPlants[i].plant_id}">${allPlants[i].plant_name}</option>`
             }
             str += `</select>
                 </center>`
@@ -42,7 +42,7 @@
             `)
 
             updateSaleGasToCustomerGUI()
-            
+
             $('#sale-gas-to-customer-div').append(`
                 <center>
                     <div>
@@ -58,19 +58,19 @@
                 </center>
             `)
         })
-        
+
     })
     $('#sale-gas-to-customer-div').css('display', 'flex')
- }
+}
 
 
- updateSaleGasToCustomerGUI = () => {
+updateSaleGasToCustomerGUI = () => {
     $(`#sale-gas-by-plant`).html('')
     let plantID = $(`#select-plant-sale-gas-to-customer-div`).find(':selected').val()
 
-    getAllTypesOfCylinders((err, cylinderTypes)=>{
-        for(let i = 0; i < cylinderTypes.length; i++) {
-            getAvailableStockByPlantID(cylinderTypes[i].weight, plantID, (err, availStock)=>{
+    getAllTypesOfCylinders((err, cylinderTypes) => {
+        for (let i = 0; i < cylinderTypes.length; i++) {
+            getAvailableStockByPlantID(cylinderTypes[i].weight, plantID, (err, availStock) => {
                 $(`#sale-gas-by-plant`).append(`
                 <div style="display: flex;justify-content: center">
                 <div style="text-align: center;" style="display: flex;">
@@ -110,23 +110,23 @@
             </div>       
                 `)
 
-                getAvailableStockByPlantID(cylinderTypes[i].weight, plantID, (err, availStock)=>{
-                    for(let j = 0; j < availStock.length; j++) {
+                getAvailableStockByPlantID(cylinderTypes[i].weight, plantID, (err, availStock) => {
+                    for (let j = 0; j < availStock.length; j++) {
                         $(`#${cylinderTypes[i].weight}kg-available-gas-rates`).append(`
                             <option>${availStock[j].buy_rate}</option>  
                         `)
-                    }                          
+                    }
                 })
             })
         }
     })
- }
+}
 
- getCustomersFromDatabase = () => {
+getCustomersFromDatabase = () => {
     $(`#select-customer-div-wrapper`).html('')
     let name = $('#customer-name-field-sale-gas').val()
-    getCustomersByName(name, (err, names)=>{
-        for(let i = 0; i < names.length; i++) {
+    getCustomersByName(name, (err, names) => {
+        for (let i = 0; i < names.length; i++) {
             $(`#select-customer-div-wrapper`).append(`
             <div style="color: #000; background-color: #fff;border: 3px solid black;">
                 <span data-id="${names[i].customer_id}" data-name="${names[i].customer_name}" 
@@ -135,20 +135,20 @@
             `)
         }
     })
- }
+}
 
 
- selectCustomer = (customerSpan) => {
-     let customerID = $(customerSpan).attr('data-id')
-     let customerName = $(customerSpan).attr('data-name')
-     $('#customer-name-field-sale-gas').val(customerName)
-     $(`#select-customer-div-wrapper`).html('')
- }
+selectCustomer = (customerSpan) => {
+    let customerID = $(customerSpan).attr('data-id')
+    let customerName = $(customerSpan).attr('data-name')
+    $('#customer-name-field-sale-gas').val(customerName)
+    $(`#select-customer-div-wrapper`).html('')
+}
 
 
- handleSaleGasCheckBoxes = (weight) => {
+handleSaleGasCheckBoxes = (weight) => {
     calculateTotalAndProfit()
-    if($(`#${weight}kg-sale-gas-checkbox`).prop('checked')) {
+    if ($(`#${weight}kg-sale-gas-checkbox`).prop('checked')) {
         $(`#sale-gas-${weight}kg-cylinders`).prop('disabled', false)
         $(`#sale-gas-${weight}kg-gas-rate`).prop('disabled', false)
     }
@@ -158,17 +158,17 @@
         $(`#sale-gas-${weight}kg-cylinders`).val('')
         $(`#sale-gas-${weight}kg-gas-rate`).val('')
     }
- }
+}
 
- calculateTotalAndProfit = () => {
-    getAllTypesOfCylinders((err, cylinderTypes)=>{
+calculateTotalAndProfit = () => {
+    getAllTypesOfCylinders((err, cylinderTypes) => {
         let total = 0
         let profit = 0
         let costPrice = 0
-        for(let i = 0; i < cylinderTypes.length; i++) {
-            if(!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')))
+        for (let i = 0; i < cylinderTypes.length; i++) {
+            if (!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')))
                 continue
-            total += Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val())  * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+            total += Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
             costPrice += Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
         }
         profit = total - costPrice
@@ -179,87 +179,112 @@
             Profit = ${profit} Rs/-
         `)
     })
- }
+}
 
- saleGasToCustomer = () => {
+saleGasToCustomer = () => {
     let customerName = $('#customer-name-field-sale-gas').val()
-    let total = 0
-    let profit = 0
-    if(customerName === '') {
-        let options = {
-            type: 'info',
-            buttons: ['Okay'],
-            message: `Enter customer name first`,
-            normalizeAccessKeys: true
-        }
-        dialog.showMessageBox(options, i => {
-            if (i == 0) {
-                return
-            }
-        })
-        return
-    }
-    getCustomer(customerName, (err, customerData)=>{
-        if(customerData.length < 1) {
-            let options = {
-                type: 'info',
-                buttons: ['Okay'],
-                message: `No customer with this name was found`,
-                normalizeAccessKeys: true
-            }
-            dialog.showMessageBox(options, i => {
-                if (i == 0) {
-                    return
-                }
-            })
-        }
-        else {
-            getAllTypesOfCylinders((err, cylinderTypes)=>{
-                let total = 0
-                let profit = 0
-                let costPrice = 0
-                for(let i = 0; i < cylinderTypes.length; i++) {
-                    if(!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')))
-                        continue
-                    total += Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val())  * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
-                    costPrice += Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
-                }
-                let date = new Date()
-                profit = total - costPrice
-                let plantID = $('#select-plant-sale-gas-to-customer-div').children('option:selected').val()
-                insertIntoSales(customerData[0].customer_id, date.getTime(), total, profit, costPrice, plantID, (err)=>{
-                    getLastSalesID((err, lastRow)=>{
-                        for(let i = 0; i < cylinderTypes.length; i++) {
-                            if(!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')))
-                                continue
-                                let numberOfCylinders =  Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
-                                let subTotal = Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val())  * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
-                                let subCost = Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
-                                let subProfit = subTotal - subCost
-                                insertIntoSalesDetails(lastRow.sales_id, cylinderTypes[i].weight, numberOfCylinders, subTotal, subCost, subProfit, plantID, (err)=>{
-                                    let options = {
-                                        type: 'info',
-                                        buttons: ['Okay'],
-                                        message: `Cylinder sold to customer`,
-                                        normalizeAccessKeys: true
-                                    }
-                                    dialog.showMessageBox(options, i => {
-                                        if (i == 0) {
-                                            return
-                                        }
-                                    })
-                                    resetSaleGasDiv()
-                                    updateMainWindowGUI()                                    
-                                })
-                        }
-                    })
-                    
-                })
-            })
-        }
-    })
- }
+    let plantID = $('#select-plant-sale-gas-to-customer-div').children('option:selected').val()
 
- resetSaleGasDiv = () => {
+    if (checkCustomerNameField(customerName)){
+        getCustomer(customerName, (err, customerData)=>{
+            if (checkCustomerNameInDatabase(customerData)){
+                getAllTypesOfCylinders((err, cylinderTypes)=>{
+                    if (checkSaleGasCheckboxes(cylinderTypes)){
+                                            
+                        // checking if there are enough cylinders
+                        let enoughCylinders = true
+                        for (let i = 0; i < cylinderTypes.length; i++) {
+
+                            // skip where checkbox is disabled
+                            if (!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')))
+                                continue
+                            // skip the cylinders where buy rate is not available
+                            if ($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text() === '')
+                                continue
+
+                            getAvailableStockByPlantIDandBuyRate(cylinderTypes[i].weight, plantID, Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()), (err, availStock) => {
+                                if (Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val()) > availStock[0].number_of_cylinders) {
+                                    enoughCylinders = false
+                                }
+
+                                if (enoughCylinders) {
+                                    let total = 0
+                                    let profit = 0
+                                    let costPrice = 0
+                                    let date = new Date()
+
+                                    for (let i = 0; i < cylinderTypes.length; i++) {
+                                        if (!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')))
+                                            continue
+                                        total += Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                        costPrice += Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                    }
+                                    profit = total - costPrice
+
+                                    insertIntoSales(customerData[0].customer_id, date.getTime(), total, profit, costPrice, plantID, (err) => {
+                                        getLastSalesID((err, lastRow) => {
+                                            for (let i = 0; i < cylinderTypes.length; i++) {
+                                                if (!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')))
+                                                    continue
+                                                let numberOfCylinders = Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                                let subTotal = Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                                let subCost = Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                                let subProfit = subTotal - subCost
+                                                insertIntoSalesDetails(lastRow.sales_id, cylinderTypes[i].weight, numberOfCylinders, subTotal, subCost, subProfit, plantID, (err) => {
+                                                    showMsgDialog('Cylinder sold to customer')
+                                                    resetSaleGasDiv()
+                                                    updateMainWindowGUI()
+                                                })
+                                            }
+                                        })
+
+                                    })
+                                }
+                                else {
+                                    showMsgDialog('Not enough cylinders available to sale')
+                                }
+                            })
+                        }
+                    }
+
+                })
+            }
+
+
+        })
+    }
+}
+
+resetSaleGasDiv = () => {
     $(`#sale-gas-to-customer-div`).html('')
- }
+}
+
+checkCustomerNameField = (customerName) => {
+    if (customerName === '') {
+        showMsgDialog('Enter customer name')
+        return false
+    }
+    return true
+}
+
+checkCustomerNameInDatabase = (customerData) => {
+    if (customerData.length < 1) {
+        showMsgDialog('No customer with this name was found')
+        return false
+    }
+    return true
+}
+
+checkSaleGasCheckboxes = (cylinderTypes) => {
+    let checked = false
+    for (let i = 0; i < cylinderTypes.length; i++) {
+        if ($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')) {
+            checked = true
+        }
+    }
+    if (!checked) {
+        showMsgDialog('Please turn on at least one checkbox')
+        return false
+    }
+    return true
+}

@@ -53,3 +53,17 @@ capitalizeFLetter = (id) => {
     var string = $(`#${id}`).html()
     return string[0].toUpperCase() + string.slice(1)
 } 
+
+showMsgDialog = (msg) => {
+    let options = {
+        type: 'info',
+        buttons: ['Okay'],
+        message: msg,
+        normalizeAccessKeys: true
+    }
+    dialog.showMessageBox(options, i => {
+        if (i == 0) {
+            return
+        }
+    })
+}
