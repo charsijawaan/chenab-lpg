@@ -26,9 +26,26 @@ updatePlantMoneyNumberGUI = () => {
     
 }
 
+updateMarketMoneyNumberGUI = () => {
+    getTotalMoneyInMarket((err, data) => {
+        $(`#total-money-in-market`).html(`${data[0].pending_amount} Rs/-`)
+        getAllTypesOfCylinders((err, cylinderTypes) => {
+            for(let i = 0; i < cylinderTypes.length; i++) {                
+                getTotalCylindersInMarket(cylinderTypes[i].weight, (err, data) => {
+                    if(data[0].total_cylinders == null) {
+                        data[0].total_cylinders = 0
+                    }
+                    $(`#market-number-of-cylinders-${cylinderTypes[i].weight}-kg`).html(`${cylinderTypes[i].weight} Kg = ${data[0].total_cylinders} Cylinders`)
+                })
+            }
+        })
+    })            
+}
+
 updateMainWindowGUI = () => {
     updateStockNumberGUI()
     updatePlantMoneyNumberGUI()
+    updateMarketMoneyNumberGUI()
 }
 
 // when ever a button is pressed all the extra divs are hided

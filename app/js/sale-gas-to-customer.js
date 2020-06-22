@@ -1,3 +1,4 @@
+var globalEnoughCylinders
 showSaleGasToCustomerDiv = () => {
     hideAllDivs()
     $(`#sale-gas-to-customer-div`).html('')
@@ -12,7 +13,8 @@ showSaleGasToCustomerDiv = () => {
                     <div style="text-align: center;">
                         <div class="mt-2">
                             <label for="inp" class="inp">
-                            <input type="text" placeholder="&nbsp;" required id="customer-name-field-sale-gas" onkeydown="getCustomersFromDatabase()">
+                            <input type="text" placeholder="&nbsp;" required id="customer-name-field-sale-gas"
+                             onkeydown="getCustomersFromDatabase('customer-name-field-sale-gas')">
                             <span class="label">Enter Customer Name</span>
                             <span class="focus-bg"></span>
                             </label>                
@@ -122,15 +124,15 @@ updateSaleGasToCustomerGUI = () => {
     })
 }
 
-getCustomersFromDatabase = () => {
+getCustomersFromDatabase = (id) => {
     $(`#select-customer-div-wrapper`).html('')
-    let name = $('#customer-name-field-sale-gas').val()
+    let name = $(`#${id}`).val()
     getCustomersByName(name, (err, names) => {
         for (let i = 0; i < names.length; i++) {
             $(`#select-customer-div-wrapper`).append(`
             <div style="color: #000; background-color: #fff;border: 3px solid black;">
                 <span data-id="${names[i].customer_id}" data-name="${names[i].customer_name}" 
-                style="cursor: pointer;" onclick="selectCustomer(this)">${names[i].customer_name}</span>
+                style="cursor: pointer;" onclick="selectCustomer(this, '${id}')">${names[i].customer_name}</span>
             </div>                
             `)
         }
@@ -138,10 +140,10 @@ getCustomersFromDatabase = () => {
 }
 
 
-selectCustomer = (customerSpan) => {
+selectCustomer = (customerSpan, id) => {
     let customerID = $(customerSpan).attr('data-id')
     let customerName = $(customerSpan).attr('data-name')
-    $('#customer-name-field-sale-gas').val(customerName)
+    $(`#${id}`).val(customerName)
     $(`#select-customer-div-wrapper`).html('')
 }
 
@@ -196,45 +198,47 @@ saleGasToCustomer = () => {
                     if (checkSaleGasCheckboxes(cylinderTypes)) {
                                             
                         // checking if there are enough cylinders
-                        if (checkIfEnoughCylinders(cylinderTypes, plantID)) {
-                            let total = 0
-                            let profit = 0
-                            let costPrice = 0
-                            let date = new Date()
-
-                            for (let i = 0; i < cylinderTypes.length; i++) {
-                                if (!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')))
-                                    continue
-                                total += Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
-                                costPrice += Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
-                            }
-                            profit = total - costPrice
-
-                            insertIntoSales(customerData[0].customer_id, date.getTime(), total, profit, costPrice, plantID, (err) => {
-                                getLastSalesID((err, lastRow) => {
-                                    for (let i = 0; i < cylinderTypes.length; i++) {
-                                        if (!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked'))) {
-                                            continue
-                                        }                                        
-                                        let numberOfCylinders = Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
-                                        let subTotal = Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
-                                        let subCost = Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
-                                        let subProfit = subTotal - subCost
-                                        insertIntoSalesDetails(lastRow.sales_id, cylinderTypes[i].weight,
-                                             numberOfCylinders, subTotal, subCost, subProfit, plantID, (err) => {                                                    
-                                        })                                        
-                                    }
-                                    showMsgDialog('Cylinder sold to customer')
-                                    resetSaleGasDiv()
-                                    updateMainWindowGUI()
+                        checkIfEnoughCylinders(cylinderTypes, plantID)                        
+                        setTimeout(()=>{
+                            if (globalEnoughCylinders) {
+                                let total = 0
+                                let profit = 0
+                                let costPrice = 0
+                                let date = new Date()
+    
+                                for (let i = 0; i < cylinderTypes.length; i++) {
+                                    if (!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked')))
+                                        continue
+                                    total += Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                    costPrice += Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                }
+                                profit = total - costPrice
+    
+                                insertIntoSales(customerData[0].customer_id, date.getTime(), total, profit, costPrice, plantID, (err) => {
+                                    getLastSalesID((err, lastRow) => {
+                                        for (let i = 0; i < cylinderTypes.length; i++) {
+                                            if (!($(`#${cylinderTypes[i].weight}kg-sale-gas-checkbox`).prop('checked'))) {
+                                                continue
+                                            }                                        
+                                            let numberOfCylinders = Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                            let subTotal = Number($(`#sale-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                            let subCost = Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+                                            let subProfit = subTotal - subCost
+                                            insertIntoSalesDetails(lastRow.sales_id, cylinderTypes[i].weight,
+                                                 numberOfCylinders, subTotal, subCost, subProfit, plantID, customerData[0].customer_id, (err) => {                                                    
+                                            })                                        
+                                        }
+                                        showMsgDialog('Cylinder sold to customer')
+                                        resetSaleGasDiv()
+                                        updateMainWindowGUI()
+                                    })
+    
                                 })
-
-                            })
-                        }                
-                        else {
-                            showMsgDialog('Not enough cylinders available to sale')
-                        }
-
+                            }                
+                            else {
+                                showMsgDialog('Not enough cylinders available to sale')
+                            }
+                        }, 500)                        
                     }
 
                 })
@@ -296,5 +300,7 @@ checkIfEnoughCylinders = (cylinderTypes, plantID) => {
             }                                
         })
     }
-    return enoughCylinders
+    setTimeout(()=>{
+        globalEnoughCylinders = enoughCylinders
+    }, 500)
 }

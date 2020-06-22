@@ -413,8 +413,8 @@ function getCustomer(customerName, cb) {
 }
 
 function insertIntoSales(customerID, date, total, profit, costPrice, plantID, cb) {
-    db.run(`INSERT INTO Sales('customer_id','date','total','profit','cost_price','plant_id') 
-            VALUES(?,?,?,?,?,?)`, [customerID, date, total, profit, costPrice, plantID], (err, res) => {
+    db.run(`INSERT INTO Sales('customer_id','date','total','profit','cost_price','plant_id', 'pending_amount') 
+            VALUES(?,?,?,?,?,?,?)`, [customerID, date, total, profit, costPrice, plantID, total], (err, res) => {
         if (err) {
             console.log(err.message)
         }
@@ -435,14 +435,58 @@ function getLastSalesID(cb) {
     })
 }
 
-function insertIntoSalesDetails(salesID, cylinderWeight, numberOfCylinders, subTotal, subCost, subProfit, plantID, cb) {
-    db.run(`INSERT INTO SalesDetails('sales_id','cylinder_weight','number_of_cylinders','sub_total','sub_cost', 'sub_profit', 'plant_id') 
-            VALUES(?,?,?,?,?,?,?)`, [salesID, cylinderWeight, numberOfCylinders, subTotal, subCost, subProfit, plantID], (err, res) => {
+function insertIntoSalesDetails(salesID, cylinderWeight, numberOfCylinders, subTotal, subCost, subProfit, plantID, customerID, cb) {
+    db.run(`INSERT INTO SalesDetails('sales_id','cylinder_weight','number_of_cylinders','sub_total','sub_cost', 'sub_profit', 'plant_id', 'customer_id') 
+            VALUES(?,?,?,?,?,?,?,?)`, [salesID, cylinderWeight, numberOfCylinders, subTotal, subCost, subProfit, plantID, customerID], (err, res) => {
         if (err) {
             console.log(err.message)
         }
         else {
             cb(null, res)
+        }
+    })
+}
+
+function getTotalMoneyInMarket(cb) {
+    db.all(`SELECT SUM(pending_amount) as pending_amount FROM Sales`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getTotalCylindersInMarket(cylinderWeight, cb) {
+    db.all(`SELECT SUM(number_of_cylinders) as total_cylinders FROM CylindersInMarket WHERE cylinder_weight = ${cylinderWeight}`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getNumberOfCylindersinPossesion(customerID, cylinderWeight, cb) {
+    db.all(`SELECT SUM(number_of_cylinders) AS number_of_cylinders, plant_id FROM CylindersInMarket WHERE customer_id = ${customerID} AND cylinder_weight = ${cylinderWeight} GROUP BY plant_id`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getTotalPendingMoneyOfACustomer(customerID, cb) {
+    db.all(`SELECT SUM(pending_amount) as pending_amount FROM Sales WHERE customer_id = ${customerID}`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
         }
     })
 }

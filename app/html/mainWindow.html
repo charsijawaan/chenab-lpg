@@ -45,9 +45,12 @@
             <div class="right-side-wrapper" style="display: flex;flex-direction: column;color: #ffffff;padding: 0px 50px;">
     
                 <div class="market-money-tab-wrapper">
-                    <h2>Market Money</h2>
-                    <p>0 Rs</p>
-                    <button id="stock-details-btn" class="btn btn-primary">View All</button>
+                    <h2>Market</h2>
+                    <p id="total-money-in-market"></p>
+                    <p id="market-number-of-cylinders-11-kg"></p>
+                    <p id="market-number-of-cylinders-15-kg"></p>
+                    <p id="market-number-of-cylinders-45-kg"></p>
+                    <button id="market-details-btn" class="btn btn-primary" onclick="showMarketDetailsDiv()">Details</button>
                 </div>
     
                 <div class="plant-money-tab-wrapper mt-5">
@@ -105,6 +108,11 @@
             <div style="width: 100%;display: none;justify-content: center;flex-direction: column;
                 color: #ffffff;align-self: baseline;align-items: center;" id="stock-details-div">
                     <!-- STOCK DETAILS DIV -->
+            </div>
+
+            <div style="width: 100%;display: none;justify-content: center;flex-direction: column;
+                color: #ffffff;align-self: baseline;align-items: center;" id="market-details-div">
+                    <!-- MARKET DETAILS DIV -->
             </div>
     
             <div style="width: 100%;display: none;justify-content: center;" id="expenses-details-div">
@@ -189,6 +197,7 @@
     <script src="./../js/add-new-customer-div.js"></script>
     <script src="./../js/sale-gas-to-customer.js"></script>
     <script src="./../js/stock-details-div.js"></script>
+    <script src="./../js/market-details-div.js"></script>
     <script src="./../database/DatabaseQueries.js" type="text/javascript"></script>
     <script src="./../js/util.js" type="text/javascript"></script>  
 
@@ -204,10 +213,10 @@
         allDivs.push($('#view-payment-history-div')[0])
         allDivs.push($('#add-new-customer-div')[0])
         allDivs.push($('#sale-gas-to-customer-div')[0])
-        allDivs.push($('#stock-details-div')[0])        
+        allDivs.push($('#stock-details-div')[0])     
+        allDivs.push($('#market-details-div')[0])        
         
-        updateStockNumberGUI()
-        updatePlantMoneyNumberGUI()
+        updateMainWindowGUI()
     </script>    
 
 </body>
