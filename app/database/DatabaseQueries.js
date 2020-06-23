@@ -80,7 +80,7 @@ updateStock = (cylinderID, numberOfCylinders, weight, buyRate, plantID, cb) => {
 
 // buy history functions
 getAllBuyHistory = (cb) => {
-    db.all(`SELECT fillings_id, strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch')) AS date,
+    db.all(`SELECT fillings_id, plant_id, strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch')) AS date,
             total_price FROM Fillings ORDER BY Fillings.date DESC`, [], (err, data) => {
         if (err) {
             console.log(err.message)
@@ -97,7 +97,7 @@ getThisMonthBuyHistory = (cb) => {
     if (month.length == 1) {
         month = '0' + month
     }
-    db.all(`SELECT fillings_id, strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch'))
+    db.all(`SELECT fillings_id, plant_id, strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch'))
              as date, strftime('%m', datetime(Fillings.date/1000, 'unixepoch')) as month,
              total_price FROM Fillings WHERE month = '${month}' ORDER BY Fillings.date DESC`, [], (err, data) => {
         if (err) {
@@ -110,7 +110,7 @@ getThisMonthBuyHistory = (cb) => {
 }
 
 getSpecificBuyHistory = (fromDate, toDate, cb) => {
-    db.all(`SELECT fillings_id, strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch')) 
+    db.all(`SELECT fillings_id, plant_id,strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch')) 
             as date, total_price FROM Fillings WHERE strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch'))
              >= '${fromDate}' AND strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch'))
               <= '${toDate}' ORDER BY Fillings.date DESC`, [], (err, data) => {

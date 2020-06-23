@@ -28,6 +28,9 @@ updatePlantMoneyNumberGUI = () => {
 
 updateMarketMoneyNumberGUI = () => {
     getTotalMoneyInMarket((err, data) => {
+        if(data[0].pending_amount === null) {
+            data[0].pending_amount = 0
+        }
         $(`#total-money-in-market`).html(`${data[0].pending_amount} Rs/-`)
         getAllTypesOfCylinders((err, cylinderTypes) => {
             for(let i = 0; i < cylinderTypes.length; i++) {                

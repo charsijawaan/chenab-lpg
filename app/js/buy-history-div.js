@@ -1,4 +1,3 @@
-// function shows the buy history div
 showViewBuyHistoryDiv = () => {
     hideAllDivs()
     $('#view-buy-history-div').html('')
@@ -30,6 +29,7 @@ showViewBuyHistoryDiv = () => {
                 <tr>
                     <th scope="col">Date <span style="font-size: 13px;">(YYYY-MM-DD)</span></th>
                     <th scope="col">Total Price</th>
+                    <th scope="col">Plant</th>
                 </tr>
             </thead>
             <tbody id="view-buy-history-table">                                       
@@ -84,6 +84,7 @@ generateBuyHistoryTable = (buyHistory, mode) => {
         >
             <td>${d.getFullYear() + '-' + month + '-' + date}</td>
             <td>${buyHistory[i].total_price}</td>
+            <td>${buyHistory[i].plant_id}</td>
         </tr>
         `
     }
@@ -128,13 +129,21 @@ $('#edit-buy-history-table-modal').on('show.bs.modal', (e) => {
             </div>      
         `)
         getFIllingsDetailsByID(id, (err, data)=>{
-            for(let i = 0; i < cylinderTypes.length; i++) {
-                $(`#edit-buy-history-date`).val(date)
-                $(`#edit-${cylinderTypes[i].weight}-kg-number-of-cylinders`).val(data[i].number_of_cylinders)
-                $(`#edit-${cylinderTypes[i].weight}-kg-rate`).val(data[i].gas_rate)
+            $(`#edit-buy-history-date`).val(date)            
+            for(let i = 0; i < data.length; i++) {
+                $(`#edit-${data[i].cylinder_weight}-kg-number-of-cylinders`).val(data[i].number_of_cylinders)
+                $(`#edit-${data[i].cylinder_weight}-kg-rate`).val(data[i].gas_rate)
                 getFillingsTotalPriceByID(id, (err, total)=>{
                     $(`#edit-buy-history-total`).val(total)
                 })
+            }
+            for(let i = 0; i < cylinderTypes.length; i++) {
+                if($(`#edit-${cylinderTypes[i].weight}-kg-number-of-cylinders`).val() === '') {
+                    $(`#edit-${cylinderTypes[i].weight}-kg-number-of-cylinders`).prop('disabled', true)
+                }
+                if($(`#edit-${cylinderTypes[i].weight}-kg-rate`).val() === '') {
+                    $(`#edit-${cylinderTypes[i].weight}-kg-rate`).prop('disabled', true)
+                }
             }
         })
     })    
@@ -156,15 +165,13 @@ enablePaymentHistoryDates = () => {
 updateEditBuyHistory = () => {
     let id = $('#edit-buy-history-id').attr('data-id')
     let mode = $('#edit-buy-history-mode').attr('data-mode')
-
-    getAllTypesOfCylinders((err, cylinderTypes)=>{
-        
+    getAllTypesOfCylinders((err, cylinderTypes) => {        
         for(let i = 0; i < cylinderTypes.length; i++) {
             let numberOfCylinders = $(`#edit-${cylinderTypes[i].weight}-kg-number-of-cylinders`).val()
             let gasRate = $(`#edit-${cylinderTypes[i].weight}-kg-rate`).val()
             let subTotal = (Number(numberOfCylinders) * Number(gasRate))
             updateFillingsDetails(id, gasRate, numberOfCylinders, subTotal, cylinderTypes[i].weight, (err)=>{
-                updateFillings(id, (err)=>{
+                updateFillings(id, (err) => {
                     updateViewBuyHistory(mode)
                     updateMainWindowGUI()
                 })
