@@ -18,11 +18,12 @@ showSaleGasToCustomerDiv = () => {
                             <span class="label">Enter Customer Name</span>
                             <span class="focus-bg"></span>
                             </label>                
-                        </div>
-                    </div>
-                <div style="text-align: center;display: flex; flex-direction: column;" id="select-customer-div-wrapper">
-                    <!-- html changes here while searching
-                </div>
+
+                            <div style="text-align: center;display: flex; flex-direction: column;" id="select-customer-div-wrapper">
+                                <!-- html changes here while searching
+                            </div>
+                        </div>                        
+                    </div>                
             </div>
             `)
 
@@ -122,29 +123,6 @@ updateSaleGasToCustomerGUI = () => {
             })
         }
     })
-}
-
-getCustomersFromDatabase = (id) => {
-    $(`#select-customer-div-wrapper`).html('')
-    let name = $(`#${id}`).val()
-    getCustomersByName(name, (err, names) => {
-        for (let i = 0; i < names.length; i++) {
-            $(`#select-customer-div-wrapper`).append(`
-            <div style="color: #000; background-color: #fff;border: 3px solid black;">
-                <span data-id="${names[i].customer_id}" data-name="${names[i].customer_name}" 
-                style="cursor: pointer;" onclick="selectCustomer(this, '${id}')">${names[i].customer_name}</span>
-            </div>                
-            `)
-        }
-    })
-}
-
-
-selectCustomer = (customerSpan, id) => {
-    let customerID = $(customerSpan).attr('data-id')
-    let customerName = $(customerSpan).attr('data-name')
-    $(`#${id}`).val(customerName)
-    $(`#select-customer-div-wrapper`).html('')
 }
 
 

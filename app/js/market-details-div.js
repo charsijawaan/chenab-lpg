@@ -49,23 +49,29 @@ getMarketInfo = () => {
                 for(let i = 0; i < cylinderTypes.length; i++) {
                     getNumberOfCylindersinPossesion(customerData[0].customer_id, cylinderTypes[i].weight, (err, data) => {
                         for(let j = 0; j < data.length; j++) {
-                            let plantName;
+                            let plantName
                             if(data[j].plant_id === 1) {
                                 plantName = 'Chenab'
                             }
                             else if(data[j].plant_id === 2) {
                                 plantName = 'Super'
                             }
-                            $('#market-details-customer-div').append(`<h3>
+                            $('#market-details-customer-div').append(`
+                            <div style="display: flex;justify-content: space-between" class="mt-3">
+                            <h3 class="mr-3">
                                 ${cylinderTypes[i].weight} Kg = ${data[j].number_of_cylinders} Cylinders (${plantName})
-                                </h3>
+                            </h3>
+                            <input type="number" min="1" max="${data[j].number_of_cylinders}" oninput="validity.valid||(value='');">
+                            </div>                            
                             `)
                         }                        
                     }) 
                 }
                 getTotalPendingMoneyOfACustomer(customerData[0].customer_id, (err, pendingAmount) => {
                     $('#market-details-customer-div').append(`
-                        <h3>Pending Amount = ${pendingAmount[0].pending_amount} Rs/-</h3>            
+                        <div class="mt-3">
+                            <h3>Pending Amount = ${pendingAmount[0].pending_amount} Rs/-</h3>            
+                        </div>                        
                     `)
                 })
             })            
