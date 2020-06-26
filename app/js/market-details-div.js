@@ -61,16 +61,15 @@ getMarketInfo = () => {
                             <h3 class="mr-3">
                                 ${cylinderTypes[i].weight} Kg = ${data[j].number_of_cylinders} Cylinders (${plantName})
                             </h3>
-                            <input type="number" min="1" max="${data[j].number_of_cylinders}" oninput="validity.valid||(value='');">
                             </div>                            
                             `)
                         }                        
                     }) 
                 }
-                getTotalPendingMoneyOfACustomer(customerData[0].customer_id, (err, pendingAmount) => {
+                getTotalPendingMoneyOfACustomer(customerData[0].customer_id, (err, data) => {
                     $('#market-details-customer-div').append(`
                         <div class="mt-3">
-                            <h3>Pending Amount = ${pendingAmount[0].pending_amount} Rs/-</h3>            
+                            <h3>Pending Amount = ${data[0].total_pending_amount} Rs/-</h3>            
                         </div>                        
                     `)
                 })

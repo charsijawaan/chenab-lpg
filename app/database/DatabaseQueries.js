@@ -448,7 +448,7 @@ function insertIntoSalesDetails(salesID, cylinderWeight, numberOfCylinders, subT
 }
 
 function getTotalMoneyInMarket(cb) {
-    db.all(`SELECT SUM(pending_amount) as pending_amount FROM Sales`, [], (err, data) => {
+    db.all(`SELECT SUM(total_pending_amount) as pending_amount FROM CustomersPendingAmount`, [], (err, data) => {
         if (err) {
             console.log(err.message)
         }
@@ -470,7 +470,7 @@ function getTotalCylindersInMarket(cylinderWeight, cb) {
 }
 
 function getNumberOfCylindersinPossesion(customerID, cylinderWeight, cb) {
-    db.all(`SELECT SUM(number_of_cylinders) AS number_of_cylinders, plant_id FROM CylindersInMarket WHERE customer_id = ${customerID} AND cylinder_weight = ${cylinderWeight} GROUP BY plant_id`, [], (err, data) => {
+    db.all(`SELECT SUM(number_of_cylinders) AS number_of_cylinders, plant_id FROM CylindersInMarket WHERE number_of_cylinders != 0 AND customer_id = ${customerID} AND cylinder_weight = ${cylinderWeight} GROUP BY plant_id`, [], (err, data) => {
         if (err) {
             console.log(err.message)
         }
@@ -481,12 +481,36 @@ function getNumberOfCylindersinPossesion(customerID, cylinderWeight, cb) {
 }
 
 function getTotalPendingMoneyOfACustomer(customerID, cb) {
-    db.all(`SELECT SUM(pending_amount) as pending_amount FROM Sales WHERE customer_id = ${customerID}`, [], (err, data) => {
+    db.all(`SELECT * FROM CustomersPendingAmount WHERE customer_id = ${customerID}`, [], (err, data) => {
         if (err) {
             console.log(err.message)
         }
         else {
             cb(null, data)
+        }
+    })
+}
+
+function receivePaymentFromCustomer(customerID, customerName, amount, date, cb) {
+    db.run(`INSERT INTO CustomerTransactions('customer_id','customer_name', 'amount', 'date') 
+            VALUES(?,?,?,?)`, [customerID, customerName, amount, date], (err, res) => {
+    if (err) {
+        console.log(err.message)
+    }
+    else {
+        cb(null, res)
+    }
+    })
+}
+
+function receiveCylinder(number, cylinderWeight, customerID, plantID, cb) {
+    db.run(`UPDATE CylindersInMarket SET number_of_cylinders = number_of_cylinders - ? 
+            WHERE cylinder_weight = ? AND customer_id = ? AND plant_id = ?`, [number, cylinderWeight, customerID, plantID], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
         }
     })
 }

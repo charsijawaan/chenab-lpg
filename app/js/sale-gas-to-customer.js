@@ -216,7 +216,7 @@ saleGasToCustomer = () => {
                             else {
                                 showMsgDialog('Not enough cylinders available to sale')
                             }
-                        }, 500)                        
+                        }, 500)                       
                     }
 
                 })
