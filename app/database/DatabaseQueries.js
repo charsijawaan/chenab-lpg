@@ -514,3 +514,36 @@ function receiveCylinder(number, cylinderWeight, customerID, plantID, cb) {
         }
     })
 }
+
+function getSalesByCustomer(customerID, cb) {
+    db.all(`SELECT *, strftime('%Y-%m-%d ', datetime(Sales.date/1000, 'unixepoch')) as sale_date FROM Sales WHERE customer_id = ?`, [customerID], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}
+
+function getCustomerTransactionsByCustomer(customerID, cb) {
+    db.all(`SELECT *, strftime('%Y-%m-%d ', datetime(CustomerTransactions.date/1000, 'unixepoch')) as transaction_date FROM CustomerTransactions WHERE customer_id = ?`, [customerID], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}
+
+function getSalesDetailsBySalesID(salesID, cb) {
+    db.all(`SELECT * FROM SalesDetails WHERE sales_id = ?`, [salesID], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}

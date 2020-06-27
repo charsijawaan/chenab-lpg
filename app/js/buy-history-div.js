@@ -128,7 +128,7 @@ $('#edit-buy-history-table-modal').on('show.bs.modal', (e) => {
                 <input type="number" id="edit-buy-history-total" disabled>
             </div>      
         `)
-        getFIllingsDetailsByID(id, (err, data)=>{
+        getFIllingsDetailsByID(id, (err, data) => {
             $(`#edit-buy-history-date`).val(date)            
             for(let i = 0; i < data.length; i++) {
                 $(`#edit-${data[i].cylinder_weight}-kg-number-of-cylinders`).val(data[i].number_of_cylinders)

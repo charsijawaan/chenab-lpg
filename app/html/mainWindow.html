@@ -13,7 +13,7 @@
 
         <div style="display: flex;width: 35%;border-right: 5px solid #ffffff;position: fixed;">
 
-            <div class="left-side-wrapper" style="display: flex;flex-direction: column;">
+            <div style="display: flex;flex-direction: column;">
 
                 <div class="stock-tab-wrapper">
                     <h2>Stock</h2>
@@ -36,7 +36,10 @@
                     </div>        
                     <div>
                         <button class="btn btn-primary mt-2" onclick="showReceiveCylindersDiv()">Receive Cylinders</button>
-                    </div>        
+                    </div>
+                    <div>
+                        <button class="btn btn-primary mt-2" onclick="showCustomerDetailsDiv()">Customer Details</button>
+                    </div>  
                 </div>
 
             </div>        
@@ -117,12 +120,17 @@
 
             <div style="width: 100%;display: none;justify-content: center;flex-direction: column;
                 color: #ffffff;align-self: baseline;align-items: center;" id="receive-payment-div">
-                    
+                    <!-- RECEIVE PAYMENT DIV -->
             </div>
 
             <div style="width: 100%;display: none;justify-content: center;flex-direction: column;
                 color: #ffffff;align-self: baseline;align-items: center;" id="receive-cylinders-div">
-                    
+                    <!-- RECEIVE CYLINDERS DIV -->
+            </div>
+
+            <div style="width: 100%;display: none;justify-content: center;flex-direction: column;
+                color: #ffffff;align-self: baseline;align-items: center;" id="customer-details-div">
+                    <!-- CUSTOMER DETIALS DIV -->
             </div>
   
         </div> 
@@ -183,6 +191,29 @@
             </div>
           </div>   
 
+
+          <div class="modal fade" id="edit-sale-history-table-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content" style="color: black;">
+                <div class="modal-header">
+                  <h5 class="modal-title">Edit Sale History</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" style="display: flex;flex-direction: column;justify-content: center;align-items: center;">
+                    <div class="mt-3" style="display: flex;flex-direction: column;justify-content: center;
+                        text-align: center;align-items: flex-end;" id="edit-sale-history-menu">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="edit-buy-history-close-btn" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="edit-buy-history-confirm-btn" onclick="updateEditSaleHistory()">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>   
+
     </div>
 
     <script src="./../js/jquery.min.js"></script>
@@ -206,6 +237,7 @@
     <script src="./../js/market-details-div.js"></script>
     <script src="./../js/receive-payment-div.js"></script>
     <script src="./../js/receive-cylinders-div.js"></script>
+    <script src="./../js/customer-details-div.js"></script>
     <script src="./../database/DatabaseQueries.js" type="text/javascript"></script>
     <script src="./../js/util.js" type="text/javascript"></script>  
 
@@ -224,6 +256,7 @@
         allDivs.push($('#market-details-div')[0])   
         allDivs.push($('#receive-payment-div')[0])   
         allDivs.push($('#receive-cylinders-div')[0])   
+        allDivs.push($('#customer-details-div')[0])   
         
         updateMainWindowGUI()
     </script>    
