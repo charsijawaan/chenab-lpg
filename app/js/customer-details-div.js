@@ -75,7 +75,7 @@ showSaleDetails = () => {
                 }
                 $(`#customer-details-table-tbody`).append(`
                     <tr style="cursor: pointer;" data-toggle="modal" data-target="#edit-sale-history-table-modal" 
-                        data-salesid=${salesDetails[i].sales_id} data-customerid=${customerData[0].customer_id}
+                        data-salesid=${salesDetails[i].sales_id} data-customerid=${customerData[0].customer_id} 
                         data-customerName=${customerName} data-saleDate=${salesDetails[i].sale_date} data-total=${salesDetails[i].total} 
                         data-profit=${salesDetails[i].profit} data-costPrice=${salesDetails[i].cost_price} 
                         data-plantID=${salesDetails[i].plant_id} data-plantName=${plantName}>
@@ -163,6 +163,9 @@ $('#edit-sale-history-table-modal').on('show.bs.modal', (e) => {
     let costPrice = $(opener).attr('data-costprice')
     let plantID = $(opener).attr('data-plantid')
     let plantName = $(opener).attr('data-plantname')
+
+    $(`#edit-sale-history-table-modal`).attr('sales-id', salesID)
+    $(`#edit-sale-history-table-modal`).attr('customer-id', customerID)
     
     getAllTypesOfCylinders((err, cylinderTypes) => {
 
@@ -170,15 +173,20 @@ $('#edit-sale-history-table-modal').on('show.bs.modal', (e) => {
             $(`#edit-sale-history-menu`).append(`
             <div style="display: flex;" class="mt-2">
                 <p class="mr-3">${cylinderTypes[i].weight} Kg</p>
-                <input type="number" id="edit-${cylinderTypes[i].weight}-kg-number-of-cylinders">
+                <input type="number" id="edit-${cylinderTypes[i].weight}-kg-number-of-cylinders" 
+                oninput="validity.valid||(value='');numberOfCylindersValidation(this,${cylinderTypes[i].weight},${plantID}, ${costPrice});">
             </div>
             <div style="display: flex;" class="mt-2">
-                <p class="mr-3">${cylinderTypes[i].weight} Kg Rate</p>
+                <p class="mr-3">${cylinderTypes[i].weight} Kg Buy Rate</p>
                 <input type="number" id="edit-${cylinderTypes[i].weight}-kg-rate">
             </div>
             <div style="display: flex;" class="mt-2">
                 <p class="mr-3">${cylinderTypes[i].weight} Sub Cost</p>
                 <input type="number" id="edit-${cylinderTypes[i].weight}-sub-cost">
+            </div>
+            <div style="display: flex;" class="mt-2">
+                <p class="mr-3">${cylinderTypes[i].weight} Sub Sale Rate/Cylinder</p>
+                <input type="number" id="edit-${cylinderTypes[i].weight}-sub-sale-rate-per-cylinder" oninput="rateFieldValidation(this,${cylinderTypes[i].weight},${plantID}, ${costPrice})">
             </div>
             <div style="display: flex;" class="mt-2">
                 <p class="mr-3">${cylinderTypes[i].weight} Sub Total</p>
@@ -196,13 +204,18 @@ $('#edit-sale-history-table-modal').on('show.bs.modal', (e) => {
                 $(`#edit-${salesData[i].cylinder_weight}-kg-number-of-cylinders`).val(salesData[i].number_of_cylinders)
                 $(`#edit-${salesData[i].cylinder_weight}-kg-rate`).val((salesData[i].sub_cost / salesData[i].number_of_cylinders))
                 $(`#edit-${salesData[i].cylinder_weight}-sub-cost`).val(salesData[i].sub_cost)
+                $(`#edit-${salesData[i].cylinder_weight}-sub-sale-rate-per-cylinder`).val((salesData[i].sub_total / salesData[i].number_of_cylinders))
                 $(`#edit-${salesData[i].cylinder_weight}-sub-total`).val(salesData[i].sub_total)
                 $(`#edit-${salesData[i].cylinder_weight}-sub-profit`).val(salesData[i].sub_profit)
+                $(`#edit-sale-history-table-modal`).attr(`old-number-of-cylinders-${salesData[i].cylinder_weight}`, salesData[i].number_of_cylinders)
             }
 
             for(let i = 0; i < cylinderTypes.length; i++) {
                 if($(`#edit-${cylinderTypes[i].weight}-kg-number-of-cylinders`).val() === '') {
                     $(`#edit-${cylinderTypes[i].weight}-kg-number-of-cylinders`).prop('disabled', true)
+                }
+                if($(`#edit-${cylinderTypes[i].weight}-sub-sale-rate-per-cylinder`).val() === ``) {
+                    $(`#edit-${cylinderTypes[i].weight}-sub-sale-rate-per-cylinder`).prop('disabled', true)
                 }
                 $(`#edit-${cylinderTypes[i].weight}-kg-rate`).prop('disabled', true)
                 $(`#edit-${cylinderTypes[i].weight}-sub-cost`).prop('disabled', true)
@@ -214,5 +227,50 @@ $('#edit-sale-history-table-modal').on('show.bs.modal', (e) => {
 })
 
 updateEditSaleHistory = () => {
-    // START CODE HERE
+    let salesID = $('#edit-sale-history-table-modal').attr('sales-id')
+    let customerID = $(`#edit-sale-history-table-modal`).attr('customer-id')
+
+    getAllTypesOfCylinders((err, cylinderTypes)=>{
+        for(let i = 0; i < cylinderTypes.length; i++) {
+            let oldNumberOfCylinders = $(`#edit-sale-history-table-modal`).attr(`old-number-of-cylinders-${cylinderTypes[i].weight}`)
+            let subCostPrice = $(`#edit-${cylinderTypes[i].weight}-sub-cost`).val()
+            
+            let singleCylinderCostPrice = (subCostPrice / oldNumberOfCylinders)
+
+            let newNumberOfCylinders = $(`#edit-${cylinderTypes[i].weight}-kg-number-of-cylinders`).val()
+            let newSaleRatePerCylinder = $(`#edit-${cylinderTypes[i].weight}-sub-sale-rate-per-cylinder`).val()
+            
+            let newSubTotal = newNumberOfCylinders * newSaleRatePerCylinder
+            let newSubProfit = newSubTotal - (newNumberOfCylinders * singleCylinderCostPrice)
+
+            let newSubCost = newNumberOfCylinders * singleCylinderCostPrice
+            
+
+            updateSalesDetails(salesID, newNumberOfCylinders, newSubTotal, newSubProfit, customerID, cylinderTypes[i].weight, newSubCost, ()=>{
+                updateMainWindowGUI()
+            })            
+        }
+        $('#edit-sale-history-close-btn').click()
+    })
+}
+
+numberOfCylindersValidation = (field, cylinderWeight, plantID, costPrice) => {
+    let numberOfCylinders = Number($(`#edit-sale-history-table-modal`).attr(`old-number-of-cylinders-${cylinderWeight}`))
+    getAvailableStockByPlantIDandBuyRate(cylinderWeight, plantID, (costPrice / numberOfCylinders), (err, stock) => {
+        if(Number(field.value) < 1) {
+            field.value = 1
+        }
+        if(Number(field.value) > stock[0].number_of_cylinders + numberOfCylinders) {
+            field.value = 1
+        }    
+    })
+}
+
+rateFieldValidation = (field, cylinderWeight, plantID, costPrice) => {
+    let numberOfCylinders = Number($(`#edit-sale-history-table-modal`).attr(`old-number-of-cylinders-${cylinderWeight}`))
+    getAvailableStockByPlantIDandBuyRate(cylinderWeight, plantID, (costPrice / numberOfCylinders), (err, stock) => {
+        if(Number(field.value) < stock[0].buy_rate) {
+            field.value = stock[0].buy_rate
+        }
+    })
 }

@@ -413,8 +413,8 @@ function getCustomer(customerName, cb) {
 }
 
 function insertIntoSales(customerID, date, total, profit, costPrice, plantID, cb) {
-    db.run(`INSERT INTO Sales('customer_id','date','total','profit','cost_price','plant_id', 'pending_amount') 
-            VALUES(?,?,?,?,?,?,?)`, [customerID, date, total, profit, costPrice, plantID, total], (err, res) => {
+    db.run(`INSERT INTO Sales('customer_id','date','total','profit','cost_price','plant_id') 
+            VALUES(?,?,?,?,?,?)`, [customerID, date, total, profit, costPrice, plantID], (err, res) => {
         if (err) {
             console.log(err.message)
         }
@@ -539,6 +539,19 @@ function getCustomerTransactionsByCustomer(customerID, cb) {
 
 function getSalesDetailsBySalesID(salesID, cb) {
     db.all(`SELECT * FROM SalesDetails WHERE sales_id = ?`, [salesID], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}
+
+function updateSalesDetails(salesID, numberOfCylinders, newSubTotal, newSubProfit, customerID, cylinderWeight, newSubCost, cb) {
+    db.run(`UPDATE SalesDetails SET number_of_cylinders = ?, sub_total = ?, sub_profit = ?, sub_cost = ?
+            WHERE sales_id = ? AND customer_id = ? AND cylinder_weight = ?`,
+            [numberOfCylinders, newSubTotal, newSubProfit, newSubCost, salesID, customerID, cylinderWeight], (err, res) => {
         if (err) {
             console.log(err.message)
         }
