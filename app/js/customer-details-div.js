@@ -11,12 +11,12 @@ showCustomerDetailsDiv = () => {
                 <label for="inp" class="inp">
                 <input type="text" placeholder="&nbsp;" required id="customer-name-field-customer-details"
                  onkeydown="getCustomersFromDatabase('customer-name-field-customer-details')">
-                <span class="label">Enter Customer Name</span>
+                <span class="label">Enter Company Name</span>
                 <span class="focus-bg"></span>
                 </label>                
             </div>
         </div>
-        <div style="text-align: center;display: flex; flex-direction: column;" id="select-customer-div-wrapper">
+        <div style="text-align: center;display: flex; flex-direction: column;" id="select-company-div-wrapper">
             <!-- html changes here while searching -->
         </div>
     </div>
@@ -44,12 +44,12 @@ resetCustomerDetailsDiv = () => {
 showSaleDetails = () => {
     $(`#customer-details-table-thead`).html(``)
     $(`#customer-details-table-tbody`).html(``)
-    let customerName = $(`#customer-name-field-customer-details`).val()
-    if(customerName === ''){
+    let companyName = $(`#customer-name-field-customer-details`).val()
+    if(companyName === ''){
         showMsgDialog('Enter Customer name')
         return
     }
-    getCustomer(customerName, (err, customerData) => {
+    getCustomer(companyName, (err, customerData) => {
         if(customerData.length < 1) {
             showMsgDialog('No customer with this name was found')
             return
@@ -76,11 +76,11 @@ showSaleDetails = () => {
                 $(`#customer-details-table-tbody`).append(`
                     <tr style="cursor: pointer;" data-toggle="modal" data-target="#edit-sale-history-table-modal" 
                         data-salesid=${salesDetails[i].sales_id} data-customerid=${customerData[0].customer_id} 
-                        data-customerName=${customerName} data-saleDate=${salesDetails[i].sale_date} data-total=${salesDetails[i].total} 
+                        data-companyname=${companyName} data-saleDate=${salesDetails[i].sale_date} data-total=${salesDetails[i].total} 
                         data-profit=${salesDetails[i].profit} data-costPrice=${salesDetails[i].cost_price} 
                         data-plantID=${salesDetails[i].plant_id} data-plantName=${plantName}>
 
-                        <td>${customerName}</td>
+                        <td>${companyName}</td>
                         <td>${salesDetails[i].sale_date}</td>
                         <td>${salesDetails[i].total}</td>
                         <td>${salesDetails[i].profit}</td>
@@ -96,12 +96,12 @@ showSaleDetails = () => {
 showPaymentDetails = () => {
     $(`#customer-details-table-thead`).html(``)
     $(`#customer-details-table-tbody`).html(``)
-    let customerName = $(`#customer-name-field-customer-details`).val()
-    if(customerName === ''){
+    let companyName = $(`#customer-name-field-customer-details`).val()
+    if(companyName === ''){
         showMsgDialog('Enter Customer name')
         return
     }
-    getCustomer(customerName, (err, customerData) => {
+    getCustomer(companyName, (err, customerData) => {
         if(customerData.length < 1) {
             showMsgDialog('No customer with this name was found')
             return
@@ -117,7 +117,7 @@ showPaymentDetails = () => {
             for(let i = 0; i < transactionsData.length; i++) {
                 $(`#customer-details-table-tbody`).append(`
                     <tr style="cursor: pointer;">
-                        <td>${customerName}</td>
+                        <td>${companyName}</td>
                         <td>${transactionsData[i].transaction_date}</td>
                         <td>${transactionsData[i].amount}</td>
                     </tr>
@@ -130,12 +130,12 @@ showPaymentDetails = () => {
 showCylinderDetails = () => {
     $(`#customer-details-table-thead`).html(``)
     $(`#customer-details-table-tbody`).html(``)
-    let customerName = $(`#customer-name-field-customer-details`).val()
-    if(customerName === ''){
+    let companyName = $(`#customer-name-field-customer-details`).val()
+    if(companyName === ''){
         showMsgDialog('Enter Customer name')
         return
     }
-    getCustomer(customerName, (err, customerData) => {
+    getCustomer(companyName, (err, customerData) => {
         if(customerData.length < 1) {
             showMsgDialog('No customer with this name was found')
             return
@@ -154,7 +154,7 @@ showCylinderDetails = () => {
 $('#edit-sale-history-table-modal').on('show.bs.modal', (e) => {
     $(`#edit-sale-history-menu`).html('')
     let opener = e.relatedTarget
-    let customerName = $(opener).attr('data-customername')
+    let companyName = $(opener).attr('data-companyname')
     let customerID = $(opener).attr('data-customerid')
     let salesID = $(opener).attr('data-salesid')
     let saleDate = $(opener).attr('data-saledate')

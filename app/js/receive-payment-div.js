@@ -9,12 +9,12 @@ showReceivePaymentDiv = () => {
                     <label for="inp" class="inp">
                     <input type="text" placeholder="&nbsp;" required id="customer-name-field-receive-payment"
                     onkeydown="getCustomersFromDatabase('customer-name-field-receive-payment')">
-                    <span class="label">Enter Customer Name</span>
+                    <span class="label">Enter Company Name</span>
                     <span class="focus-bg"></span>
                     </label>                
                 </div>
             </div>
-            <div style="text-align: center;display: flex; flex-direction: column;" id="select-customer-div-wrapper">
+            <div style="text-align: center;display: flex; flex-direction: column;" id="select-company-div-wrapper">
                 <!-- html changes here while searching -->
             </div>
         </div>
@@ -33,11 +33,11 @@ resetReceivePaymentDiv = () => {
 
 receivePaymentSearchButton = () => {
     $('#receive-payment-customer-details-div').html('')
-    let customerName = $('#customer-name-field-receive-payment').val()
-    if(customerName === '') {
+    let companyName = $('#customer-name-field-receive-payment').val()
+    if(companyName === '') {
         showMsgDialog('Enter customer name')
     }
-    getCustomer(customerName, (err, customerData) => {
+    getCustomer(companyName, (err, customerData) => {
         if(customerData.length < 1) {
             showMsgDialog('No customer with this name was found')
             return

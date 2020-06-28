@@ -344,8 +344,9 @@ function getAllPlants(cb) {
     })
 }
 
-function addNewCustomerInDatabase(customerName, cb) {
-    db.run(`INSERT INTO Customers('customer_name') VALUES(?)`, [customerName], (err, res) => {
+function addNewCustomerInDatabase(companyName, customerName, phoneNumber, limit, cb) {
+    db.run(`INSERT INTO Customers('company_name', 'customer_name', 'phone_number', 'limit') VALUES(?,?,?,?)`,
+            [companyName, customerName, phoneNumber, limit], (err, res) => {
         if (err) {
             console.log(err.message)
         }
@@ -355,8 +356,8 @@ function addNewCustomerInDatabase(customerName, cb) {
     })
 }
 
-function getCustomersByName(customerName, cb) {
-    db.all(`SELECT * FROM Customers WHERE customer_name LIKE '${customerName}%'`, [], (err, data) => {
+function getCustomersByName(companyName, cb) {
+    db.all(`SELECT * FROM Customers WHERE company_name LIKE '${companyName}%'`, [], (err, data) => {
         if (err) {
             console.log(err.message)
         }
@@ -401,8 +402,8 @@ function getAvailableStockByPlantIDandBuyRate(cylinderWeight, plantID, buyRate, 
     })
 }
 
-function getCustomer(customerName, cb) {
-    db.all(`SELECT * FROM Customers WHERE customer_name = '${customerName}'`, [], (err, customerData) => {
+function getCustomer(companyName, cb) {
+    db.all(`SELECT * FROM Customers WHERE company_name = '${companyName}'`, [], (err, customerData) => {
         if (err) {
             console.log(err.message)
         }

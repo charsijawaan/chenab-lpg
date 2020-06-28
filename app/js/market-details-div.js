@@ -9,14 +9,14 @@ showMarketDetailsDiv = () => {
         <div style="text-align: center;">
             <div class="mt-2">
                 <label for="inp" class="inp">
-                <input type="text" placeholder="&nbsp;" required id="customer-name-field-market-details"
-                 onkeydown="getCustomersFromDatabase('customer-name-field-market-details')">
+                <input type="text" placeholder="&nbsp;" required id="company-name-field-market-details"
+                 onkeydown="getCustomersFromDatabase('company-name-field-market-details')">
                 <span class="label">Enter Customer Name</span>
                 <span class="focus-bg"></span>
                 </label>                
             </div>
         </div>
-        <div style="text-align: center;display: flex; flex-direction: column;" id="select-customer-div-wrapper">
+        <div style="text-align: center;display: flex; flex-direction: column;" id="select-company-div-wrapper">
             <!-- html changes here while searching -->
         </div>
     </div>
@@ -35,13 +35,13 @@ resetMarketDetailsDiv = () => {
 
 getMarketInfo = () => {
     $('#market-details-customer-div').html('')
-    let customerName = $('#customer-name-field-market-details').val()
-    if(customerName === '') {
-        showMsgDialog('Enter customer name')
+    let companyName = $('#company-name-field-market-details').val()
+    if(companyName === '') {
+        showMsgDialog('Enter company name')
     }
-    getCustomer(customerName, (err, customerData) => {
+    getCustomer(companyName, (err, customerData) => {
         if(customerData.length < 1) {
-            showMsgDialog('No customer with this name was found')
+            showMsgDialog('No company with this name was found')
             return
         }
         else {

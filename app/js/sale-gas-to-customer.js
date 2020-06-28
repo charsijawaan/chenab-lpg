@@ -15,11 +15,11 @@ showSaleGasToCustomerDiv = () => {
                             <label for="inp" class="inp">
                             <input type="text" placeholder="&nbsp;" required id="customer-name-field-sale-gas"
                              onkeydown="getCustomersFromDatabase('customer-name-field-sale-gas')">
-                            <span class="label">Enter Customer Name</span>
+                            <span class="label">Enter Company Name</span>
                             <span class="focus-bg"></span>
                             </label>                
 
-                            <div style="text-align: center;display: flex; flex-direction: column;" id="select-customer-div-wrapper">
+                            <div style="text-align: center;display: flex; flex-direction: column;" id="select-company-div-wrapper">
                                 <!-- html changes here while searching
                             </div>
                         </div>                        
