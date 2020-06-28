@@ -5,27 +5,27 @@ showMarketDetailsDiv = () => {
     <div style="text-align: center;">
         <h2>Market Details</h2>
     </div>
-    <div>
-        <div style="text-align: center;">
-            <div class="mt-2">
-                <label for="inp" class="inp">
-                <input type="text" placeholder="&nbsp;" required id="company-name-field-market-details"
-                 onkeydown="getCustomersFromDatabase('company-name-field-market-details')">
-                <span class="label">Enter Customer Name</span>
-                <span class="focus-bg"></span>
-                </label>                
-            </div>
-        </div>
-        <div style="text-align: center;display: flex; flex-direction: column;" id="select-company-div-wrapper">
-            <!-- html changes here while searching -->
-        </div>
-    </div>
-    <div class="mt-3 mb-4">
-        <button class="btn btn-primary" style="text-align: center;" onclick="getMarketInfo()">Search</button>
-    </div>
-    <div id="market-details-customer-div">
+    <div class="mt-4" style="width: 100%">
+        <table class="table" style="color: #ffffff;text-align: center;">
+            <thead>
+                <tr>
+                    <th scope="col">Company Name</th>
+                    <th scope="col">Customer Name</th>
+                    <th scope="col">Pending Amount</th>
+                    <th scope="col">11 Kg Chenab</th>
+                    <th scope="col">15 Kg Chenab</th>
+                    <th scope="col">45 Kg Chenab</th>
+                    <th scope="col">11 Kg Super</th>
+                    <th scope="col">15 Kg Super</th>
+                    <th scope="col">45 Kg Super</th>
+                </tr>
+            </thead>
+            <tbody id="view-market-details-table">                                       
+            </tbody>
+        </table>
     </div>
     `)
+    generateMarketTable()
     $('#market-details-div').css('display', 'flex')
 }
 
@@ -33,48 +33,84 @@ resetMarketDetailsDiv = () => {
     $('#market-details-div').html(``)
 }
 
-getMarketInfo = () => {
-    $('#market-details-customer-div').html('')
-    let companyName = $('#company-name-field-market-details').val()
-    if(companyName === '') {
-        showMsgDialog('Enter company name')
-    }
-    getCustomer(companyName, (err, customerData) => {
-        if(customerData.length < 1) {
-            showMsgDialog('No company with this name was found')
-            return
-        }
-        else {
-            getAllTypesOfCylinders((err, cylinderTypes) => {
-                for(let i = 0; i < cylinderTypes.length; i++) {
-                    getNumberOfCylindersinPossesion(customerData[0].customer_id, cylinderTypes[i].weight, (err, data) => {
-                        for(let j = 0; j < data.length; j++) {
-                            let plantName
-                            if(data[j].plant_id === 1) {
-                                plantName = 'Chenab'
-                            }
-                            else if(data[j].plant_id === 2) {
-                                plantName = 'Super'
-                            }
-                            $('#market-details-customer-div').append(`
-                            <div style="display: flex;justify-content: space-between" class="mt-3">
-                            <h3 class="mr-3">
-                                ${cylinderTypes[i].weight} Kg = ${data[j].number_of_cylinders} Cylinders (${plantName})
-                            </h3>
-                            </div>                            
-                            `)
-                        }                        
-                    }) 
+generateMarketTable = () => {    
+    getAllCustomersWithPendingAmount((err, data) => {        
+        for(let i = 0; i < data.length; i++) {
+            let record = {
+                'company_name': '--',
+                'customer_name': '--',
+                'total_pending_amount': '--',
+                '11_kg_cylinders_chenab': '--',
+                '15_kg_cylinders_chenab': '--',
+                '45_kg_cylinders_chenab': '--',
+                '11_kg_cylinders_super': '--',
+                '15_kg_cylinders_super': '--',
+                '45_kg_cylinders_super': '--'
+            }
+            getNumberOfCylindersinPossesion(data[i].customer_id, 11, (err,num)=>{
+                if(num[0].plant_id === 1) {
+                    record['11_kg_cylinders_chenab'] = num[0].number_of_cylinders
                 }
-                getTotalPendingMoneyOfACustomer(customerData[0].customer_id, (err, data) => {
-                    $('#market-details-customer-div').append(`
-                        <div class="mt-3">
-                            <h3>Pending Amount = ${data[0].total_pending_amount} Rs/-</h3>            
-                        </div>                        
-                    `)
-                })
-            })            
+                if(num[0].plant_id === 2) {
+                    record['11_kg_cylinders_super'] = num[0].number_of_cylinders
+                }
+                if(num[1].plant_id === 1) {
+                    record['11_kg_cylinders_chenab'] = num[1].number_of_cylinders
+                }
+                if(num[1].plant_id === 2) {
+                    record['11_kg_cylinders_super'] = num[2].number_of_cylinders
+                }
+            })
+            getNumberOfCylindersinPossesion(data[i].customer_id, 15, (err,num)=>{
+                if(num[0].plant_id === 1) {
+                    record['15_kg_cylinders_chenab'] = num[0].number_of_cylinders
+                }
+                if(num[0].plant_id === 2) {
+                    record['15_kg_cylinders_super'] = num[0].number_of_cylinders
+                }
+                if(num[1].plant_id === 1) {
+                    record['15_kg_cylinders_chenab'] = num[1].number_of_cylinders
+                }
+                if(num[1].plant_id === 2) {
+                    record['15_kg_cylinders_super'] = num[2].number_of_cylinders
+                }
+            })
+            getNumberOfCylindersinPossesion(data[i].customer_id, 45, (err,num)=>{
+                if(num[0].plant_id === 1) {
+                    record['45_kg_cylinders_chenab'] = num[0].number_of_cylinders
+                }
+                if(num[0].plant_id === 2) {
+                    record['45_kg_cylinders_super'] = num[0].number_of_cylinders
+                }
+                if(num[1].plant_id === 1) {
+                    record['45_kg_cylinders_chenab'] = num[1].number_of_cylinders
+                }
+                if(num[1].plant_id === 2) {
+                    record['45_kg_cylinders_super'] = num[2].number_of_cylinders
+                }
+            })
+
+            record['company_name'] = data[i].company_name
+            if(data[i].customer_name != null) {
+                record['customer_name'] = data[i].customer_name
+            }            
+            record['total_pending_amount'] = data[i].total_pending_amount
+
+            setTimeout(()=>{
+                $(`#view-market-details-table`).append(`
+                <tr>
+                    <td>${record['company_name']}</td>
+                    <td>${record['customer_name']}</td>
+                    <td>${record['total_pending_amount']}</td>
+                    <td>${record['11_kg_cylinders_chenab']}</td>
+                    <td>${record['15_kg_cylinders_chenab']}</td>
+                    <td>${record['45_kg_cylinders_chenab']}</td>
+                    <td>${record['11_kg_cylinders_super']}</td>
+                    <td>${record['15_kg_cylinders_super']}</td>
+                    <td>${record['45_kg_cylinders_super']}</td>
+                </tr>
+            `)
+            }, 1000)            
         }
     })
-
 }

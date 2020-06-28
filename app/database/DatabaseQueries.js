@@ -561,3 +561,27 @@ function updateSalesDetails(salesID, numberOfCylinders, newSubTotal, newSubProfi
         }
     })
 }
+
+function getAllCustomers(cb) {
+    db.all(`SELECT * FROM Customers`, [], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}
+
+function getAllCustomersWithPendingAmount(cb) {
+    db.all(`SELECT Customers.customer_id, Customers.company_name, Customers.customer_name, 
+            CustomersPendingAmount.total_pending_amount FROM Customers INNER JOIN CustomersPendingAmount 
+            ON Customers.customer_id = CustomersPendingAmount.customer_id`, [], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}
