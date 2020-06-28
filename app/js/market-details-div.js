@@ -39,6 +39,7 @@ generateMarketTable = () => {
             let record = {
                 'company_name': '--',
                 'customer_name': '--',
+                'limit': '--',
                 'total_pending_amount': '--',
                 '11_kg_cylinders_chenab': '--',
                 '15_kg_cylinders_chenab': '--',
@@ -95,10 +96,17 @@ generateMarketTable = () => {
                 record['customer_name'] = data[i].customer_name
             }            
             record['total_pending_amount'] = data[i].total_pending_amount
-
+            record['limit'] = data[i].limit
+            let color
+            if(data[i].total_pending_amount >= data[i].limit) {
+                color = 'red'
+            }
+            else {
+                color = 'green'
+            }
             setTimeout(()=>{
                 $(`#view-market-details-table`).append(`
-                <tr>
+                <tr style="color: ${color}; font-weight: bold; font-size: 17px;">
                     <td>${record['company_name']}</td>
                     <td>${record['customer_name']}</td>
                     <td>${record['total_pending_amount']}</td>

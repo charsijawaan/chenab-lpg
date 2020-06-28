@@ -48,7 +48,8 @@ decreaseCylindersStock = (numberOfCylinders, id, cb) => {
 
 updateStock = (cylinderID, numberOfCylinders, weight, buyRate, plantID, cb) => {
 
-    db.all(`SELECT * FROM Stock WHERE cylinder_id = ${cylinderID} AND buy_rate = ${buyRate} AND cylinder_weight = ${weight} AND plant_id = ${plantID}`, [], (err, data) => {
+    db.all(`SELECT * FROM Stock WHERE cylinder_id = ${cylinderID} AND buy_rate = ${buyRate} 
+            AND cylinder_weight = ${weight} AND plant_id = ${plantID}`, [], (err, data) => {
         if (err) {
             console.log(err.message)
         }
@@ -65,7 +66,9 @@ updateStock = (cylinderID, numberOfCylinders, weight, buyRate, plantID, cb) => {
                 })
             }
             else {
-                db.run(`UPDATE Stock SET number_of_cylinders = number_of_cylinders + ${numberOfCylinders} WHERE cylinder_id = ${cylinderID} AND buy_rate = ${buyRate} AND cylinder_weight = ${weight} AND plant_id = ${plantID}`, [], (err, res) => {
+                db.run(`UPDATE Stock SET number_of_cylinders = number_of_cylinders + ${numberOfCylinders} 
+                        WHERE cylinder_id = ${cylinderID} AND buy_rate = ${buyRate} AND cylinder_weight = ${weight} 
+                        AND plant_id = ${plantID}`, [], (err, res) => {
                     if (err) {
                         console.log(err.message)
                     }
@@ -300,7 +303,8 @@ function insertIntoFillingsDetails(id, gasRate, numberOfCylinders, totalPrice, c
 
 
 function updateFillings(id, cb) {
-    db.run(`UPDATE Fillings SET total_price = ( SELECT SUM(total_price) FROM FillingsDetails WHERE fillings_id = ${id} GROUP BY fillings_id) WHERE fillings_id = ${id}`, [], (err, res) => {
+    db.run(`UPDATE Fillings SET total_price = ( SELECT SUM(total_price) FROM FillingsDetails 
+            WHERE fillings_id = ${id} GROUP BY fillings_id) WHERE fillings_id = ${id}`, [], (err, res) => {
         if (err) {
             console.log(err.message)
         }
@@ -437,8 +441,9 @@ function getLastSalesID(cb) {
 }
 
 function insertIntoSalesDetails(salesID, cylinderWeight, numberOfCylinders, subTotal, subCost, subProfit, plantID, customerID, cb) {
-    db.run(`INSERT INTO SalesDetails('sales_id','cylinder_weight','number_of_cylinders','sub_total','sub_cost', 'sub_profit', 'plant_id', 'customer_id') 
-            VALUES(?,?,?,?,?,?,?,?)`, [salesID, cylinderWeight, numberOfCylinders, subTotal, subCost, subProfit, plantID, customerID], (err, res) => {
+    db.run(`INSERT INTO SalesDetails('sales_id','cylinder_weight','number_of_cylinders','sub_total','sub_cost', 
+            'sub_profit', 'plant_id', 'customer_id') VALUES(?,?,?,?,?,?,?,?)`,
+            [salesID, cylinderWeight, numberOfCylinders, subTotal, subCost, subProfit, plantID, customerID], (err, res) => {
         if (err) {
             console.log(err.message)
         }
@@ -460,7 +465,8 @@ function getTotalMoneyInMarket(cb) {
 }
 
 function getTotalCylindersInMarket(cylinderWeight, cb) {
-    db.all(`SELECT SUM(number_of_cylinders) as total_cylinders FROM CylindersInMarket WHERE cylinder_weight = ${cylinderWeight}`, [], (err, data) => {
+    db.all(`SELECT SUM(number_of_cylinders) as total_cylinders FROM CylindersInMarket 
+            WHERE cylinder_weight = ${cylinderWeight}`, [], (err, data) => {
         if (err) {
             console.log(err.message)
         }
@@ -471,7 +477,9 @@ function getTotalCylindersInMarket(cylinderWeight, cb) {
 }
 
 function getNumberOfCylindersinPossesion(customerID, cylinderWeight, cb) {
-    db.all(`SELECT SUM(number_of_cylinders) AS number_of_cylinders, plant_id FROM CylindersInMarket WHERE number_of_cylinders != 0 AND customer_id = ${customerID} AND cylinder_weight = ${cylinderWeight} GROUP BY plant_id`, [], (err, data) => {
+    db.all(`SELECT SUM(number_of_cylinders) AS number_of_cylinders, plant_id 
+            FROM CylindersInMarket WHERE number_of_cylinders != 0 AND customer_id = ${customerID} 
+            AND cylinder_weight = ${cylinderWeight} GROUP BY plant_id`, [], (err, data) => {
         if (err) {
             console.log(err.message)
         }
@@ -517,7 +525,8 @@ function receiveCylinder(number, cylinderWeight, customerID, plantID, cb) {
 }
 
 function getSalesByCustomer(customerID, cb) {
-    db.all(`SELECT *, strftime('%Y-%m-%d ', datetime(Sales.date/1000, 'unixepoch')) as sale_date FROM Sales WHERE customer_id = ?`, [customerID], (err, res) => {
+    db.all(`SELECT *, strftime('%Y-%m-%d ', datetime(Sales.date/1000, 'unixepoch')) 
+            as sale_date FROM Sales WHERE customer_id = ?`, [customerID], (err, res) => {
         if (err) {
             console.log(err.message)
         }
@@ -528,7 +537,8 @@ function getSalesByCustomer(customerID, cb) {
 }
 
 function getCustomerTransactionsByCustomer(customerID, cb) {
-    db.all(`SELECT *, strftime('%Y-%m-%d ', datetime(CustomerTransactions.date/1000, 'unixepoch')) as transaction_date FROM CustomerTransactions WHERE customer_id = ?`, [customerID], (err, res) => {
+    db.all(`SELECT *, strftime('%Y-%m-%d ', datetime(CustomerTransactions.date/1000, 'unixepoch'))
+            as transaction_date FROM CustomerTransactions WHERE customer_id = ?`, [customerID], (err, res) => {
         if (err) {
             console.log(err.message)
         }
@@ -574,9 +584,9 @@ function getAllCustomers(cb) {
 }
 
 function getAllCustomersWithPendingAmount(cb) {
-    db.all(`SELECT Customers.customer_id, Customers.company_name, Customers.customer_name, 
+    db.all(`SELECT Customers.*,
             CustomersPendingAmount.total_pending_amount FROM Customers INNER JOIN CustomersPendingAmount 
-            ON Customers.customer_id = CustomersPendingAmount.customer_id`, [], (err, res) => {
+            ON Customers.customer_id = CustomersPendingAmount.customer_id ORDER BY Customers.company_name ASC`, [], (err, res) => {
         if (err) {
             console.log(err.message)
         }
