@@ -21,6 +21,7 @@ showCustomerDetailsDiv = () => {
         </div>
     </div>
     <div class="mt-3 mb-4">
+        <button class="btn btn-primary" type="button" style="text-align: center;" onclick="showCompanyDetails()" data-toggle="modal" data-target="company-details-modal">Comapny Details</button>
         <button class="btn btn-primary" style="text-align: center;" onclick="showSaleDetails()">Sale Details</button>
         <button class="btn btn-primary" style="text-align: center;" onclick="showPaymentDetails()">Payment Details</button>
         <button class="btn btn-primary" style="text-align: center;" onclick="showCylinderDetails()">Cylinder Details</button>
@@ -39,6 +40,50 @@ showCustomerDetailsDiv = () => {
 
 resetCustomerDetailsDiv = () => {
     $(`#customer-details-div`).html(``)
+}
+
+showCompanyDetails = () => {
+    $(`#customer-details-table-thead`).html(``)
+    $(`#customer-details-table-tbody`).html(``)
+    let companyName = $(`#customer-name-field-customer-details`).val()
+    if(companyName === ''){
+        showMsgDialog('Enter Customer name')
+        return
+    }
+    getCustomer(companyName, (err, customerData) => {
+        if(customerData.length < 1) {
+            showMsgDialog('No customer with this name was found')
+            return
+        }
+        $(`#company-details-menu`).html(``)
+        for(let i = 0; i < customerData.length; i++) {
+            if(customerData[0].customer_name === null) {
+                customerData[0].customer_name = ''
+            }
+            if(customerData[0].phone_number === null) {
+                customerData[0].phone_number = ''
+            }
+            $(`#company-details-menu`).append(`
+                <div style="display: flex;" class="mt-2">
+                    <p class="mr-3">Company Name</p>
+                    <input type="text" value="${customerData[0].company_name}">
+                </div>
+                <div style="display: flex;" class="mt-2">
+                    <p class="mr-3">Customer Name</p>
+                    <input type="text" value="${customerData[0].customer_name}">
+                </div>
+                <div style="display: flex;" class="mt-2">
+                    <p class="mr-3">Phone Number</p>
+                    <input type="number" value="${customerData[0].phone_number}">
+                </div>
+                <div style="display: flex;" class="mt-2">
+                    <p class="mr-3">Limit</p>
+                    <input type="number" value="${customerData[0].limit}">
+                </div>
+            `)
+        }
+        $('#company-details-modal').modal('show')
+    })
 }
 
 showSaleDetails = () => {
