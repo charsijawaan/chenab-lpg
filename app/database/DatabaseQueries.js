@@ -595,3 +595,60 @@ function getAllCustomersWithPendingAmount(cb) {
         }
     })
 }
+
+function insertIntoBuyAssets(plantID, total, date, cb) {
+    db.run(`INSERT INTO BuyAssets('plant_id','total','date') VALUES(?,?,?)`, [plantID, total, date], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}
+
+function insertIntoBuyAssetsDetails(buyAssetsID, rate, numberOfCylinders, total, cylinderWeight, cb) {
+    db.run(`INSERT INTO BuyAssetsDetails('buy_assets_id','rate','number_of_cylinders','total','cylinder_weight') 
+            VALUES(?,?,?,?,?)`, [buyAssetsID, rate, numberOfCylinders, total, cylinderWeight], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}
+
+function getLastBuyAssetsID(cb) {
+    db.get(`SELECT * FROM BuyAssets WHERE buy_assets_id = (SELECT MAX(buy_assets_id) FROM BuyAssets)`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getTotalNumberOfCylindersInAssets(cylinderID, cb) {
+    db.all(`SELECT SUM(number_of_cylinders) as number_of_cylinders FROM Assets WHERE cylinder_id = ${cylinderID}`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getAvailableAssetsByPlantID(cylinderWeight, plantID, cb) {
+    db.all(`SELECT SUM(number_of_cylinders) AS number_of_cylinders FROM Assets WHERE cylinder_weight = ${cylinderWeight} AND number_of_cylinders != 0
+            AND plant_id = ${plantID}`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
