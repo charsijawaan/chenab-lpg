@@ -109,6 +109,8 @@ resetBuyGasDiv = () => {
 
 // buys gas btn in buy gas div to purchase gas
 buyGasFromPlant = () => {
+    let plantID = $('#select-plant-buy-gas-div').children('option:selected').val()
+    let assetsAvailable = true
     getAllTypesOfCylinders((err, cylinderTypes)=>{
         let checked = false
         for(let i = 0; i < cylinderTypes.length; i++) {
@@ -129,59 +131,87 @@ buyGasFromPlant = () => {
                 }
             })
         }
-        else {
-            let total = 0
-            for(let i = 0; i < cylinderTypes.length; i++) {
-                if(!($(`#${cylinderTypes[i].weight}kg-buy-gas-checkbox`).prop('checked')))
-                    continue
-                let gasRate = $(`#buy-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()
-                let numberOfCylinders = $(`#buy-gas-${cylinderTypes[i].weight}kg-cylinders`).val()            
-                total = total + (Number(gasRate) * Number(numberOfCylinders))
-            }
-            let date = new Date()
-            let plantID = $('#select-plant-buy-gas-div').children('option:selected').val()
-            insertIntoFillings(date.getTime(), total, plantID, (err)=>{
-                getLastFillingsID((err, lastRow)=>{
-                    for(let i = 0; i < cylinderTypes.length; i++) {
-                        if(!($(`#${cylinderTypes[i].weight}kg-buy-gas-checkbox`).prop('checked')))
-                            continue
-                        let gasRate = $(`#buy-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()
-                        let numberOfCylinders = $(`#buy-gas-${cylinderTypes[i].weight}kg-cylinders`).val()
-                        let subTotal = Number(gasRate) * Number(numberOfCylinders) 
-
-                        if($(`#buy-gas-${cylinderTypes[i].weight}kg-cylinders`).val() == '') {
-                            gasRate = 0
-                            numberOfCylinders = 0
-                            subTotal = 0
+        let iter = 0
+        for(let i = 0; i < cylinderTypes.length; i++) {
+            if(!($(`#${cylinderTypes[i].weight}kg-buy-gas-checkbox`).prop('checked'))){
+                iter++
+                continue
+            }                
+            let numberOfCylinders = Number($(`#buy-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
+            getAvailableAssetsByPlantID(cylinderTypes[i].weight, plantID, (err, availAssets)=>{
+                iter++
+                if(numberOfCylinders > availAssets[0].number_of_cylinders || availAssets[0].number_of_cylinders === null) {
+                    assetsAvailable = false
+                }
+                if(iter === cylinderTypes.length) {
+                    if(!assetsAvailable) {
+                        let options = {
+                            type: 'info',
+                            buttons: ['Okay'],
+                            message: `There are not enough Assets`,
+                            normalizeAccessKeys: true
                         }
-
-                        insertIntoFillingsDetails(lastRow.fillings_id, gasRate, numberOfCylinders, subTotal, cylinderTypes[i].weight,(err)=>{                            
-                            if(!(Number(numberOfCylinders) == 0)) {
-                                updateStock(cylinderTypes[i].id, numberOfCylinders, cylinderTypes[i].weight, gasRate, plantID, (err)=>{                                    
-                                    updateMainWindowGUI()
-                                    resetBuyGasDiv()                                    
-                                })
+                        dialog.showMessageBox(options, i => {
+                            if (i == 0) {
+                                return
                             }
-                            else {
-                                updateMainWindowGUI()
-                                resetBuyGasDiv()
-                            }                             
                         })
                     }
-                    let options = {
-                        type: 'info',
-                        buttons: ['Okay'],
-                        message: `Gas has been bought`,
-                        normalizeAccessKeys: true
-                    }
-                    dialog.showMessageBox(options, i => {
-                        if (i == 0) {
-                            return
+                    else {
+                        let total = 0
+                        for(let i = 0; i < cylinderTypes.length; i++) {
+                            if(!($(`#${cylinderTypes[i].weight}kg-buy-gas-checkbox`).prop('checked')))
+                                continue
+                            let gasRate = $(`#buy-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()
+                            let numberOfCylinders = $(`#buy-gas-${cylinderTypes[i].weight}kg-cylinders`).val()            
+                            total = total + (Number(gasRate) * Number(numberOfCylinders))
                         }
-                    })
-                })
+                        let date = new Date()            
+                        insertIntoFillings(date.getTime(), total, plantID, (err)=>{
+                            getLastFillingsID((err, lastRow)=>{
+                                for(let i = 0; i < cylinderTypes.length; i++) {
+                                    if(!($(`#${cylinderTypes[i].weight}kg-buy-gas-checkbox`).prop('checked')))
+                                        continue
+                                    let gasRate = $(`#buy-gas-${cylinderTypes[i].weight}kg-gas-rate`).val()
+                                    let numberOfCylinders = $(`#buy-gas-${cylinderTypes[i].weight}kg-cylinders`).val()
+                                    let subTotal = Number(gasRate) * Number(numberOfCylinders) 
+            
+                                    if($(`#buy-gas-${cylinderTypes[i].weight}kg-cylinders`).val() == '') {
+                                        gasRate = 0
+                                        numberOfCylinders = 0
+                                        subTotal = 0
+                                    }
+            
+                                    insertIntoFillingsDetails(lastRow.fillings_id, gasRate, numberOfCylinders, subTotal, cylinderTypes[i].weight,(err)=>{                            
+                                        if(!(Number(numberOfCylinders) == 0)) {
+                                            updateStock(cylinderTypes[i].id, numberOfCylinders, cylinderTypes[i].weight, gasRate, plantID, (err)=>{                                    
+                                                updateMainWindowGUI()
+                                                resetBuyGasDiv()                                    
+                                            })
+                                        }
+                                        else {
+                                            updateMainWindowGUI()
+                                            resetBuyGasDiv()
+                                        }                             
+                                    })
+                                }
+                                let options = {
+                                    type: 'info',
+                                    buttons: ['Okay'],
+                                    message: `Gas has been bought`,
+                                    normalizeAccessKeys: true
+                                }
+                                dialog.showMessageBox(options, i => {
+                                    if (i == 0) {
+                                        return
+                                    }
+                                })
+                            })
+                        })
+                    } 
+                }
             })
-        }        
+        }            
     })    
 }
 

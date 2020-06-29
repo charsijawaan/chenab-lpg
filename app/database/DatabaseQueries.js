@@ -160,10 +160,10 @@ getThisMonthPaymentHistory = (cb) => {
 
 getSpecificPaymentHistory = (fromDate, toDate, cb) => {
     db.all(`SELECT PlantTransactions.*, Plants.plant_name FROM PlantTransactions 
-            INNER JOIN Plants ON PlantTransactions.plant_id = Plants.plant_id
-            WHERE strftime('%Y-%m-%d ', datetime(PlantTransactions.date/1000, 'unixepoch')) >= '${fromDate}' 
-            AND strftime('%Y-%m-%d ', datetime(PlantTransactions.date/1000, 'unixepoch')) <= '${toDate}' 
-            ORDER BY date DESC`, [], (err, data) => {
+    INNER JOIN Plants ON PlantTransactions.plant_id = Plants.plant_id
+    WHERE strftime('%Y-%m-%d ', datetime(PlantTransactions.date/1000, 'unixepoch')) >= '${fromDate}' 
+    AND strftime('%Y-%m-%d ', datetime(PlantTransactions.date/1000, 'unixepoch')) <= '${toDate}' 
+    ORDER BY PlantTransactions.date DESC`, [], (err, data) => {
         if (err) {
             console.log(err.message)
         }
