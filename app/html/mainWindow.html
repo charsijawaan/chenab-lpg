@@ -11,9 +11,23 @@
 
     <div class="main-body-wrapper" style="display: flex;color: #ffffff;">        
 
-        <div style="display: flex;width: 35%;border-right: 5px solid #ffffff;position: fixed;">
+        <div style="display: flex;width: 35%;border-right: 5px solid #ffffff;position: fixed;height: 100vh;flex-direction: column;">
 
-            <div style="display: flex;flex-direction: column;">
+            <div style="display: flex;justify-content: space-around;align-items: baseline;">
+
+                <div class="">
+                    <h2>Assets</h2>
+                    <p>11 Kg = 0 Cylinders</p>
+                    <p>15 Kg = 0 Cylinders</p>
+                    <p>45 Kg = 0 Cylinders</p>
+                    <div>
+                        <button class="btn btn-primary" onclick="showBuyAssetsDiv()">Buy Assets</button>
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-primary" onclick="showAssetsDetailsDiv()">Asset Details</button>
+                    </div>
+                    
+                </div>
 
                 <div class="stock-tab-wrapper">
                     <h2>Stock</h2>
@@ -23,6 +37,19 @@
                     <button id="stock-details-btn" class="btn btn-primary" onclick="showStockDetailsDiv()">Stock Details</button>
                 </div>
 
+                <div class="market-money-tab-wrapper">
+                    <h2>Market</h2>
+                    <p id="total-money-in-market"></p>
+                    <p id="market-number-of-cylinders-11-kg"></p>
+                    <p id="market-number-of-cylinders-15-kg"></p>
+                    <p id="market-number-of-cylinders-45-kg"></p>
+                    <button id="market-details-btn" class="btn btn-primary" onclick="showMarketDetailsDiv()">Market Details</button>
+                </div>
+                
+            </div>
+
+
+            <div style="display: flex;justify-content: space-around;">
                 <div class="market-money-tab-wrapper mt-5">
                     <h2>Customer's</h2>
                     <div>
@@ -42,20 +69,6 @@
                     </div>  
                 </div>
 
-            </div>        
-            
-    
-            <div class="right-side-wrapper" style="display: flex;flex-direction: column;color: #ffffff;padding: 0px 50px;">
-    
-                <div class="market-money-tab-wrapper">
-                    <h2>Market</h2>
-                    <p id="total-money-in-market"></p>
-                    <p id="market-number-of-cylinders-11-kg"></p>
-                    <p id="market-number-of-cylinders-15-kg"></p>
-                    <p id="market-number-of-cylinders-45-kg"></p>
-                    <button id="market-details-btn" class="btn btn-primary" onclick="showMarketDetailsDiv()">Details</button>
-                </div>
-    
                 <div class="plant-money-tab-wrapper mt-5">
                     <h2>Plant Money</h2>
                     <p id="plant-money-chenab"></p> 
@@ -73,10 +86,15 @@
                         <button id="view-payment-history-btn" class="btn btn-primary" onclick="showPaymentHistoryDiv()">View Payment History</button>
                     </div>    
                 </div>
-            </div>     
+            </div>
         </div>
 
         <div id="hidden-divs-wrapper" style="width: 63%;position: absolute;right: 0px;">
+
+            <div style="width: 100%;display: none;justify-content: center;flex-direction: column;
+                align-items: center;align-self: baseline;" id="buy-assets-div">
+                    <!-- BUY ASSETS DIV -->
+            </div>    
 
             <div style="width: 100%;display: none;justify-content: center;flex-direction: column;
                 align-items: center;align-self: baseline;" id="buy-gas-div">
@@ -251,6 +269,7 @@
         dialog = remote.dialog;
     </script>
     
+    <script src="./../js/buy-assets-div.js"></script>
     <script src="./../js/buy-gas-div.js"></script>
     <script src="./../js/pay-plant-money-div.js"></script>
     <script src="./../js/buy-history-div.js"></script>
@@ -269,6 +288,7 @@
         // run these functions only once when app loads
         let allDivs = []
 
+        allDivs.push($('#buy-assets-div')[0])
         allDivs.push($('#buy-gas-div')[0])
         allDivs.push($('#view-buy-history-div')[0])
         allDivs.push($('#stock-details-div')[0])
