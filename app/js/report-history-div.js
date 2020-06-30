@@ -198,8 +198,91 @@ updateViewReportHistory = (status) => {
         })
     }
     else if(status == 'datepicker') {
+
         let fromDate = $('#view-report-history-from').val()
         let toDate = $('#view-report-history-to').val()
+
+        getSpecificSaleDetails(fromDate, toDate, (err, saleDetails) => {
+            let totalSalePrice = 0
+            let kg11Sold = 0
+            let kg15Sold = 0
+            let kg45Sold = 0
+
+            let totalFillingsPrice = 0
+            let kg11Fill = 0
+            let kg15Fill = 0
+            let kg45Fill = 0
+
+            let expensesPrice = 0
+
+            let paymentRec = 0
+
+            let netProfit
+
+            for(let i = 0; i < saleDetails.length; i++) {
+                totalSalePrice += saleDetails[i].sub_total
+                if(saleDetails[i].cylinder_weight === 11) {
+                    kg11Sold += saleDetails[i].number_of_cylinders
+                }
+                else if(saleDetails[i].cylinder_weight === 15) {
+                    kg15Sold += saleDetails[i].number_of_cylinders
+                }
+                else {
+                    kg45Sold += saleDetails[i].number_of_cylinders
+                }
+            }
+
+            getSpecificTotalExpenses(fromDate, toDate,(err, expenses)=>{
+                expensesPrice += expenses.total_expenses
+
+                getSpecificFillingsPrice(fromDate, toDate, (err, fillingsData)=>{
+                    for(let i = 0; i < fillingsData.length; i++) {
+                        totalFillingsPrice += fillingsData[i].total_price
+                        if(fillingsData[i].cylinder_weight === 11) {
+                            kg11Fill += fillingsData[i].number_of_cylinders
+                        }
+                        else if(fillingsData[i].cylinder_weight === 15) {
+                            kg15Fill += fillingsData[i].number_of_cylinders
+                        }
+                        else {
+                            kg45Fill += fillingsData[i].number_of_cylinders
+                        }
+                    }
+
+                    getSpecificPaymentReceived(fromDate, toDate, (err, paymentReceived)=>{
+                        paymentRec += paymentReceived.amount
+
+                        setTimeout(()=>{
+                            netProfit = totalSalePrice - totalFillingsPrice - expensesPrice
+                            $(`#report`).append(`
+                            <div class="mt-3">
+                                <p>11 Kg from Plant = ${kg11Fill}</p>
+                                <p>15 Kg from Plant = ${kg15Fill}</p>
+                                <p>45 Kg from Plant = ${kg45Fill}</p>                                
+                            </div>
+                            
+                            <div class="mt-3">
+                                <p style="margin-top: 40px">11 Kg sold = ${kg11Sold}</p>
+                                <p>15 Kg sold = ${kg15Sold}</p>
+                                <p>45 Kg sold = ${kg45Sold}</p>
+                            </div>
+
+                            <div class="mt-3">
+                                <p style="margin-top: 40px">Gas bought = ${totalFillingsPrice}</p>
+                                <p>Sold = ${totalSalePrice}</p>
+                                <p>Payment Received = ${paymentRec}</p>
+                                <p>Expenses = ${expensesPrice}</p>                                
+                                <p>Profit = ${netProfit}</p>                        
+                            </div>                                    
+                            `)
+                        }, 1000)                        
+                    })                    
+                })
+                
+            })
+
+        })
+
     }
 }
 

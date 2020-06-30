@@ -161,8 +161,8 @@ getThisMonthPaymentHistory = (cb) => {
 getSpecificPaymentHistory = (fromDate, toDate, cb) => {
     db.all(`SELECT PlantTransactions.*, Plants.plant_name FROM PlantTransactions 
     INNER JOIN Plants ON PlantTransactions.plant_id = Plants.plant_id
-    WHERE strftime('%Y-%m-%d ', datetime(PlantTransactions.date/1000, 'unixepoch')) >= '${fromDate}' 
-    AND strftime('%Y-%m-%d ', datetime(PlantTransactions.date/1000, 'unixepoch')) <= '${toDate}' 
+    WHERE strftime('%Y-%m-%d', datetime(PlantTransactions.date/1000, 'unixepoch')) >= '${fromDate}' 
+    AND strftime('%Y-%m-%d', datetime(PlantTransactions.date/1000, 'unixepoch')) <= '${toDate}' 
     ORDER BY PlantTransactions.date DESC`, [], (err, data) => {
         if (err) {
             console.log(err.message)
@@ -760,6 +760,62 @@ function getAllFillingsPrice(cb) {
 
 function getAllPaymentReceived(cb) {
     db.get(`SELECT SUM(amount) as amount FROM CustomerTransactions`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getSpecificSaleDetails(fromDate, toDate, cb) {
+    db.all(`SELECT SalesDetails.cylinder_weight, SalesDetails.number_of_cylinders,
+            SalesDetails.sub_total FROM Sales INNER JOIN SalesDetails 
+            ON Sales.sales_id = SalesDetails.sales_id WHERE 
+            strftime('%Y-%m-%d', datetime(Sales.date/1000, 'unixepoch')) >= '${fromDate}'
+            AND strftime('%Y-%m-%d', datetime(Sales.date/1000, 'unixepoch')) <= '${toDate}'`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getSpecificTotalExpenses(fromDate, toDate, cb) {
+    db.get(`SELECT SUM(expense_price) as total_expenses FROM Expenses 
+            WHERE strftime('%Y-%m-%d', datetime(Expenses.expense_date/1000, 'unixepoch')) >= 
+            '${fromDate}' AND strftime('%Y-%m-%d', datetime(Expenses.expense_date/1000, 'unixepoch')) <= '${toDate}' `, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getSpecificFillingsPrice(fromDate, toDate, cb) {
+    db.all(`SELECT FillingsDetails.cylinder_weight, FillingsDetails.number_of_cylinders, 
+            FillingsDetails.total_price FROM Fillings INNER JOIN FillingsDetails ON 
+            Fillings.fillings_id = FillingsDetails.fillings_id
+            WHERE strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch')) >= '${fromDate}' AND 
+            strftime('%Y-%m-%d', datetime(Fillings.date/1000, 'unixepoch')) <= '${toDate}'`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getSpecificPaymentReceived(fromDate, toDate, cb) {
+    db.get(`SELECT SUM(amount) as amount FROM CustomerTransactions 
+            WHERE strftime('%Y-%m-%d', datetime(CustomerTransactions.date/1000, 'unixepoch')) >= '${fromDate}' AND
+            strftime('%Y-%m-%d', datetime(CustomerTransactions.date/1000, 'unixepoch')) <= '${toDate}'`, [], (err, data) => {
         if (err) {
             console.log(err.message)
         }
