@@ -6,7 +6,7 @@ updateStockNumberGUI = () => {
                 if(data == null) {
                     data = 0
                 }
-                $(`#stock-number-of-cylinders-${cylinderTypes[i].weight}-kg`).html(`${cylinderTypes[i].weight} Kg = ${data} Cylinders`)        
+                $(`#stock-number-of-cylinders-${cylinderTypes[i].weight}-kg`).html(`${cylinderTypes[i].weight} Kg = ${data}`)        
             })        
         }
     })
@@ -38,7 +38,7 @@ updateMarketMoneyNumberGUI = () => {
                     if(data[0].total_cylinders == null) {
                         data[0].total_cylinders = 0
                     }
-                    $(`#market-number-of-cylinders-${cylinderTypes[i].weight}-kg`).html(`${cylinderTypes[i].weight} Kg = ${data[0].total_cylinders} Cylinders`)
+                    $(`#market-number-of-cylinders-${cylinderTypes[i].weight}-kg`).html(`${cylinderTypes[i].weight} Kg = ${data[0].total_cylinders}`)
                 })
             }
         })
@@ -52,9 +52,72 @@ updateAssetsNumberGUI = () => {
                 if(data[0].number_of_cylinders == null) {
                     data[0].number_of_cylinders = 0
                 }
-                $(`#assets-number-of-cylinders-${cylinderTypes[i].weight}-kg`).html(`${cylinderTypes[i].weight} Kg = ${data[0].number_of_cylinders} Cylinders`)        
+                $(`#assets-number-of-cylinders-${cylinderTypes[i].weight}-kg`).html(`${cylinderTypes[i].weight} Kg = ${data[0].number_of_cylinders}`)        
             })        
         }
+    })
+}
+
+updateProfitNumberGUI = () => {
+    getThisMonthSaleDetails((err, saleDetails) => {
+        let totalSalePrice = 0
+        let kg11Sold = 0
+        let kg15Sold = 0
+        let kg45Sold = 0
+
+        let totalFillingsPrice = 0
+        let kg11Fill = 0
+        let kg15Fill = 0
+        let kg45Fill = 0
+
+        let expensesPrice = 0
+
+        let netProfit
+
+        for(let i = 0; i < saleDetails.length; i++) {
+            totalSalePrice += saleDetails[i].sub_total
+            if(saleDetails[i].cylinder_weight === 11) {
+                kg11Sold += saleDetails[i].number_of_cylinders
+            }
+            else if(saleDetails[i].cylinder_weight === 15) {
+                kg15Sold += saleDetails[i].number_of_cylinders
+            }
+            else {
+                kg45Sold += saleDetails[i].number_of_cylinders
+            }
+        }
+
+        getThisMonthTotalExpenses((err, expenses)=>{
+            expensesPrice += expenses.total_expenses
+
+            getThisMonthFillingsPrice((err, fillingsData)=>{
+                for(let i = 0; i < fillingsData.length; i++) {
+                    totalFillingsPrice += fillingsData[i].total_price
+                    if(fillingsData[i].cylinder_weight === 11) {
+                        kg11Fill += fillingsData[i].number_of_cylinders
+                    }
+                    else if(fillingsData[i].cylinder_weight === 15) {
+                        kg15Fill += fillingsData[i].number_of_cylinders
+                    }
+                    else {
+                        kg45Fill += fillingsData[i].number_of_cylinders
+                    }
+                }
+
+                setTimeout(()=>{
+                    if(netProfit > 0) {
+                        $(`#this-month-profit`).css('color', 'green')    
+                    }
+                    else {
+                        $(`#this-month-profit`).css('color', 'red')    
+                    }
+                    $(`#this-month-profit`).html(`${netProfit} Rs/-`)
+                }, 1000)
+                netProfit = totalSalePrice - (totalFillingsPrice + expensesPrice)                
+            })
+            
+        })
+
     })
 }
 
@@ -63,6 +126,7 @@ updateMainWindowGUI = () => {
     updatePlantMoneyNumberGUI()
     updateMarketMoneyNumberGUI()
     updateAssetsNumberGUI()
+    updateProfitNumberGUI()
 }
 
 // when ever a button is pressed all the extra divs are hided

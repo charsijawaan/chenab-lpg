@@ -18,7 +18,7 @@ app.on('ready', () => {
 	})
 
 	win.maximize()
-	win.setMenu(null)
+	// win.setMenu(null)
 
 	win.once('ready-to-show', () => {
 	  win.show()

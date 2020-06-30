@@ -204,6 +204,7 @@ saleGasToCustomer = () => {
                                             let subProfit = subTotal - subCost
                                             insertIntoSalesDetails(lastRow.sales_id, cylinderTypes[i].weight,
                                                  numberOfCylinders, subTotal, subCost, subProfit, plantID, customerData[0].customer_id, (err) => {                                                    
+                                                updateMainWindowGUI()
                                             })                                        
                                         }
                                         showMsgDialog('Cylinder sold to customer')

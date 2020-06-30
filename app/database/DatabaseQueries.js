@@ -652,3 +652,119 @@ function getAvailableAssetsByPlantID(cylinderWeight, plantID, cb) {
         }
     })
 }
+
+function getThisMonthSaleDetails(cb) {
+    db.all(`SELECT SalesDetails.cylinder_weight, SalesDetails.number_of_cylinders, SalesDetails.sub_total FROM Sales INNER JOIN SalesDetails 
+    ON Sales.sales_id = SalesDetails.sales_id 
+    WHERE strftime('%m', datetime(Sales.date/1000, 'unixepoch')) = strftime('%m', date('now'))
+    `, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getThisMonthTotalExpenses(cb) {
+    db.get(`SELECT SUM(expense_price) as total_expenses FROM Expenses 
+            WHERE strftime('%m', datetime(Expenses.expense_date/1000, 'unixepoch')) = 
+            strftime('%m', date('now'))`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getThisMonthFillingsPrice(cb) {
+    db.all(`SELECT FillingsDetails.cylinder_weight, FillingsDetails.number_of_cylinders, 
+            FillingsDetails.total_price FROM Fillings INNER JOIN FillingsDetails ON 
+            Fillings.fillings_id = FillingsDetails.fillings_id
+            WHERE strftime('%m', datetime(Fillings.date/1000, 'unixepoch')) = strftime('%m', date('now'))`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getThisMonthPaymentReceived(cb) {
+    db.get(`SELECT SUM(amount) as amount FROM CustomerTransactions 
+            WHERE strftime('%m', datetime(CustomerTransactions.date/1000, 'unixepoch')) 
+            = strftime('%m', date('now'))`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function insertIntoExpenses(exName, exPrice, exDate, cb) {
+    db.run(`INSERT INTO Expenses('expense_name','expense_price','expense_date') VALUES(?,?,?)`,
+            [exName, exPrice, exDate], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}
+
+function getAllSaleDetails(cb) {
+    db.all(`SELECT SalesDetails.cylinder_weight, SalesDetails.number_of_cylinders, 
+            SalesDetails.sub_total FROM Sales INNER JOIN SalesDetails 
+            ON Sales.sales_id = SalesDetails.sales_id
+    `, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getAllTotalExpenses(cb) {
+    db.get(`SELECT SUM(expense_price) as total_expenses FROM Expenses`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getAllFillingsPrice(cb) {
+    db.all(`SELECT FillingsDetails.cylinder_weight, FillingsDetails.number_of_cylinders, 
+            FillingsDetails.total_price FROM Fillings INNER JOIN FillingsDetails ON 
+            Fillings.fillings_id = FillingsDetails.fillings_id
+            `, [], (err, data) => {
+            if (err) {
+                console.log(err.message)
+            }
+            else {
+                cb(null, data)
+            }
+    })
+}
+
+function getAllPaymentReceived(cb) {
+    db.get(`SELECT SUM(amount) as amount FROM CustomerTransactions`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
