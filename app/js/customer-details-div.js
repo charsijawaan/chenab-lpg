@@ -160,8 +160,19 @@ showPaymentDetails = () => {
         `)
         getCustomerTransactionsByCustomer(customerData[0].customer_id, (err, transactionsData)=>{
             for(let i = 0; i < transactionsData.length; i++) {
+                var d = new Date(transactionsData[i].transaction_date);
+                let month = String(d.getMonth() + 1)
+                let date = String(d.getUTCDate())
+                if(month.length == 1) {
+                    month = `0` + month
+                }
+                if(date.length == 1) {
+                    date = `0` + date
+                }
                 $(`#customer-details-table-tbody`).append(`
-                    <tr style="cursor: pointer;">
+                    <tr style="cursor: pointer;" data-toggle="modal" data-target="#edit-company-payment-modal" 
+                    data-company-name="${companyName}" data-date="${d.getFullYear() + '-' + month + '-' + date}" 
+                    data-amount="${transactionsData[i].amount}" data-id="${transactionsData[i].transaction_id}">
                         <td>${companyName}</td>
                         <td>${transactionsData[i].transaction_date}</td>
                         <td>${transactionsData[i].amount}</td>
@@ -186,13 +197,32 @@ showCylinderDetails = () => {
             return
         }
         $(`#customer-details-table-thead`).append(`
-            <tr>
-                <th scope="col">Customer Name</th>
+            <tr>                
                 <th scope="col">Date</th>
                 <th scope="col">Cylinder Weight</th>
                 <th scope="col">Number of cylinders</th>
+                <th scope="col">Plant</th>
             </tr>
         `)
+        getCylinderTransactionsByCompanyName(companyName, (err, cylinderTransactions) => {
+            for(let i = 0; i < cylinderTransactions.length; i++) {
+                let plantName = ''
+                if(cylinderTransactions[i].plant_id === 1) {
+                    plantName = 'Chenab'
+                }
+                else {
+                    plantName = 'Super'
+                }
+                $(`#customer-details-table-tbody`).append(`
+                    <tr style="cursor: pointer">
+                        <td>${cylinderTransactions[i].date}</td>
+                        <td>${cylinderTransactions[i].cylinder_weight}</td>
+                        <td>${cylinderTransactions[i].number_of_cylinders}</td>
+                        <td>${plantName}</td>
+                    </tr>
+                `)
+            }            
+        })
     })
 }
 
@@ -269,6 +299,34 @@ $('#edit-sale-history-table-modal').on('show.bs.modal', (e) => {
             }
         })
     })        
+})
+
+$('#edit-company-payment-modal').on('show.bs.modal', (e) => {
+    $(`#edit-company-payment-menu`).html('')
+    let opener = e.relatedTarget
+
+    let transactionID = $(opener).attr('data-id')
+    let companyName = $(opener).attr('data-company-name')
+    let amount = $(opener).attr('data-amount')
+    let date = $(opener).attr('data-date')
+
+    $(`#edit-company-payment-modal`).attr('data-id', transactionID)
+
+    $(`#edit-company-payment-menu`).append(`
+        <div style="display: flex" class="mt-2">
+            <p class="mr-3">Date</p>
+            <input type="date" value="${date}" disabled>
+        </div>
+        <div style="display: flex" class="mt-2">
+            <p class="mr-3">Company Name</p>
+            <input type="text" value="${companyName}">
+        </div>
+        <div style="display: flex" class="mt-2">
+            <p class="mr-3">Amount</p>
+            <input type="number" value="${amount}">
+        </div>
+    `)
+
 })
 
 updateEditSaleHistory = () => {

@@ -97,13 +97,16 @@ receiveCylindersButton = () => {
                             for(let j = 0; j < data.length; j++) {
                                 let num = $(`#${cylinderTypes[i].weight}kg-receive-cylinders-field-${data[j].plant_id}`).val()
                                 let plantID = $(`#${cylinderTypes[i].weight}kg-receive-cylinders-field-${data[j].plant_id}`).attr('data-plantID')
+                                let date = new Date()
                                 if(num === undefined) {
                                     continue
                                 }                        
                                 if(num === '') {
                                     num = 0
                                 }                                
-                                console.log(num)
+                                insertIntoCylinderTransactions(customerData[0].customer_id, plantID, cylinderTypes[i].weight, num, date.getTime(), ()=>{
+                                    
+                                })
                                 receiveCylinder(num, cylinderTypes[i].weight, customerData[0].customer_id, plantID, (err)=>{                            
                                 })
                             }

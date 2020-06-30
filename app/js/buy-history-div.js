@@ -107,7 +107,7 @@ $('#edit-buy-history-table-modal').on('show.bs.modal', (e) => {
         $(`#edit-buy-history-menu`).append(`
             <div style="display: flex;">
                 <p class="mr-3">Date</p>             
-                <input type="date" id="edit-buy-history-date">
+                <input type="date" id="edit-buy-history-date" disabled>
             </div>                      
         `)
         for(let i = 0; i < cylinderTypes.length; i++) {

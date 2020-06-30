@@ -503,18 +503,44 @@ function getTotalPendingMoneyOfACustomer(customerID, cb) {
 function receivePaymentFromCustomer(customerID, customerName, amount, date, cb) {
     db.run(`INSERT INTO CustomerTransactions('customer_id','customer_name', 'amount', 'date') 
             VALUES(?,?,?,?)`, [customerID, customerName, amount, date], (err, res) => {
-    if (err) {
-        console.log(err.message)
-    }
-    else {
-        cb(null, res)
-    }
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
     })
 }
 
 function receiveCylinder(number, cylinderWeight, customerID, plantID, cb) {
     db.run(`UPDATE CylindersInMarket SET number_of_cylinders = number_of_cylinders - ? 
             WHERE cylinder_weight = ? AND customer_id = ? AND plant_id = ?`, [number, cylinderWeight, customerID, plantID], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}
+
+function insertIntoCylinderTransactions(customerID, plantID, cylinderWeight, numberOfCylinders, date, cb) {
+    db.run(`INSERT INTO CylinderTransactions('customer_id','plant_id','cylinder_weight','number_of_cylinders','date') 
+            VALUES(?,?,?,?,?)`, [customerID, plantID, cylinderWeight, numberOfCylinders, date], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}
+
+function getCylinderTransactionsByCompanyName(companyName, cb) {
+    db.all(`SELECT CylinderTransactions.plant_id, CylinderTransactions.cylinder_weight, 
+            CylinderTransactions.number_of_cylinders, strftime('%Y-%m-%d', datetime(CylinderTransactions.date/1000, 'unixepoch')) 
+            AS date, Customers.company_name FROM CylinderTransactions INNER JOIN Customers ON CylinderTransactions.customer_id = 
+            Customers.customer_id WHERE Customers.company_name = '${companyName}'`, [], (err, res) => {
         if (err) {
             console.log(err.message)
         }
