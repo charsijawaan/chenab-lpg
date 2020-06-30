@@ -60,7 +60,7 @@ updateAssetsNumberGUI = () => {
 
 updateProfitNumberGUI = () => {
     getThisMonthSaleDetails((err, saleDetails) => {
-        let totalSalePrice = 0
+        let totalSaleProfit = 0
         let kg11Sold = 0
         let kg15Sold = 0
         let kg45Sold = 0
@@ -75,7 +75,7 @@ updateProfitNumberGUI = () => {
         let netProfit
 
         for(let i = 0; i < saleDetails.length; i++) {
-            totalSalePrice += saleDetails[i].sub_total
+            totalSaleProfit += saleDetails[i].sub_profit
             if(saleDetails[i].cylinder_weight === 11) {
                 kg11Sold += saleDetails[i].number_of_cylinders
             }
@@ -113,7 +113,7 @@ updateProfitNumberGUI = () => {
                     }
                     $(`#this-month-profit`).html(`${netProfit} Rs/-`)
                 }, 1000)
-                netProfit = totalSalePrice - (totalFillingsPrice + expensesPrice)                
+                netProfit = totalSaleProfit - expensesPrice
             })
             
         })

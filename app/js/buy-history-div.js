@@ -72,11 +72,18 @@ generateBuyHistoryTable = (buyHistory, mode) => {
         var d = new Date(buyHistory[i].date);
         let month = String(d.getMonth() + 1)
         let date = String(d.getUTCDate())
+        let plantName = ''
         if(month.length == 1) {
             month = `0` + month
         }
         if(date.length == 1) {
             date = `0` + date
+        }
+        if(buyHistory[i].plant_id === 1) {
+            plantName = 'Chenab'
+        }
+        else {
+            plantName = 'Super'
         }
         row += `
         <tr data-id=${buyHistory[i].fillings_id} style="cursor: pointer;" data-toggle="modal" data-mode=${mode} data-target="#edit-buy-history-table-modal"
@@ -84,7 +91,7 @@ generateBuyHistoryTable = (buyHistory, mode) => {
         >
             <td>${d.getFullYear() + '-' + month + '-' + date}</td>
             <td>${buyHistory[i].total_price}</td>
-            <td>${buyHistory[i].plant_id}</td>
+            <td>${plantName}</td>
         </tr>
         `
     }

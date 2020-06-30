@@ -8,6 +8,7 @@ showReportHistoryDiv = () => {
 
         <div class="mt-3" style="text-align: center;">
         <div>
+            <button class="btn btn-primary" onclick="updateViewReportHistory('today')">Today</button>
             <button class="btn btn-primary" onclick="updateViewReportHistory('thisMonth')">This Month</button>
             <button class="btn btn-primary" onclick="updateViewReportHistory('fetchAll')">Fetch All</button>
         </div>
@@ -36,6 +37,7 @@ updateViewReportHistory = (status) => {
     if (status == 'thisMonth') {
         getThisMonthSaleDetails((err, saleDetails) => {
             let totalSalePrice = 0
+            let totalSaleProfit = 0
             let kg11Sold = 0
             let kg15Sold = 0
             let kg45Sold = 0
@@ -49,10 +51,13 @@ updateViewReportHistory = (status) => {
 
             let paymentRec = 0
 
+            let cashInHand = 0
+
             let netProfit
 
             for(let i = 0; i < saleDetails.length; i++) {
                 totalSalePrice += saleDetails[i].sub_total
+                totalSaleProfit += saleDetails[i].sub_profit
                 if(saleDetails[i].cylinder_weight === 11) {
                     kg11Sold += saleDetails[i].number_of_cylinders
                 }
@@ -84,30 +89,37 @@ updateViewReportHistory = (status) => {
                     getThisMonthPaymentReceived((err, paymentReceived)=>{
                         paymentRec += paymentReceived.amount
 
-                        setTimeout(()=>{
-                            netProfit = totalSalePrice - totalFillingsPrice - expensesPrice
-                            $(`#report`).append(`
-                            <div class="mt-3">
-                                <p>11 Kg from Plant = ${kg11Fill}</p>
-                                <p>15 Kg from Plant = ${kg15Fill}</p>
-                                <p>45 Kg from Plant = ${kg45Fill}</p>                                
-                            </div>
+                        getCashInHand((err, cash)=>{
+                            cashInHand += cash.cash_in_hand
                             
-                            <div class="mt-3">
-                                <p style="margin-top: 40px">11 Kg sold = ${kg11Sold}</p>
-                                <p>15 Kg sold = ${kg15Sold}</p>
-                                <p>45 Kg sold = ${kg45Sold}</p>
-                            </div>
+                            setTimeout(()=>{
+                                netProfit = totalSaleProfit - expensesPrice
+                                $(`#report`).append(`
+                                <div class="mt-3">
+                                    <p>11 Kg from Plant = ${kg11Fill}</p>
+                                    <p>15 Kg from Plant = ${kg15Fill}</p>
+                                    <p>45 Kg from Plant = ${kg45Fill}</p>                                
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <p style="margin-top: 40px">11 Kg sold = ${kg11Sold}</p>
+                                    <p>15 Kg sold = ${kg15Sold}</p>
+                                    <p>45 Kg sold = ${kg45Sold}</p>
+                                </div>
+    
+                                <div class="mt-3">
+                                    <p style="margin-top: 40px">Gas bought = ${totalFillingsPrice}</p>
+                                    <p>Sold = ${totalSalePrice}</p>
+                                    <p>Payment Received = ${paymentRec}</p>
+                                    <p>Expenses = ${expensesPrice}</p>                                
+                                    <p>Profit = ${netProfit}</p>
+                                    <p>Cash In Hand = ${cashInHand}</p>                       
+                                </div>                                    
+                                `)
+                            }, 1000) 
 
-                            <div class="mt-3">
-                                <p style="margin-top: 40px">Gas bought = ${totalFillingsPrice}</p>
-                                <p>Sold = ${totalSalePrice}</p>
-                                <p>Payment Received = ${paymentRec}</p>
-                                <p>Expenses = ${expensesPrice}</p>                                
-                                <p>Profit = ${netProfit}</p>                        
-                            </div>                                    
-                            `)
-                        }, 1000)                        
+                        })
+                                               
                     })                    
                 })
                 
@@ -118,6 +130,7 @@ updateViewReportHistory = (status) => {
     else if(status == 'fetchAll') {
         getAllSaleDetails((err, saleDetails) => {
             let totalSalePrice = 0
+            let totalSaleProfit = 0
             let kg11Sold = 0
             let kg15Sold = 0
             let kg45Sold = 0
@@ -131,10 +144,13 @@ updateViewReportHistory = (status) => {
 
             let paymentRec = 0
 
+            let cashInHand = 0
+
             let netProfit
 
             for(let i = 0; i < saleDetails.length; i++) {
                 totalSalePrice += saleDetails[i].sub_total
+                totalSaleProfit += saleDetails[i].sub_profit
                 if(saleDetails[i].cylinder_weight === 11) {
                     kg11Sold += saleDetails[i].number_of_cylinders
                 }
@@ -166,30 +182,37 @@ updateViewReportHistory = (status) => {
                     getAllPaymentReceived((err, paymentReceived)=>{
                         paymentRec += paymentReceived.amount
 
-                        setTimeout(()=>{
-                            netProfit = totalSalePrice - totalFillingsPrice - expensesPrice
-                            $(`#report`).append(`
-                            <div class="mt-3">
-                                <p>11 Kg from Plant = ${kg11Fill}</p>
-                                <p>15 Kg from Plant = ${kg15Fill}</p>
-                                <p>45 Kg from Plant = ${kg45Fill}</p>                                
-                            </div>
-                            
-                            <div class="mt-3">
-                                <p style="margin-top: 40px">11 Kg sold = ${kg11Sold}</p>
-                                <p>15 Kg sold = ${kg15Sold}</p>
-                                <p>45 Kg sold = ${kg45Sold}</p>
-                            </div>
+                        getCashInHand((err, cash)=> {
+                            cashInHand += cash.cash_in_hand
 
-                            <div class="mt-3">
-                                <p style="margin-top: 40px">Gas bought = ${totalFillingsPrice}</p>
-                                <p>Sold = ${totalSalePrice}</p>
-                                <p>Payment Received = ${paymentRec}</p>
-                                <p>Expenses = ${expensesPrice}</p>                                
-                                <p>Profit = ${netProfit}</p>                        
-                            </div>                                    
-                            `)
-                        }, 1000)                        
+                            setTimeout(()=>{
+                                netProfit = totalSaleProfit - expensesPrice
+                                $(`#report`).append(`
+                                <div class="mt-3">
+                                    <p>11 Kg from Plant = ${kg11Fill}</p>
+                                    <p>15 Kg from Plant = ${kg15Fill}</p>
+                                    <p>45 Kg from Plant = ${kg45Fill}</p>                                
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <p style="margin-top: 40px">11 Kg sold = ${kg11Sold}</p>
+                                    <p>15 Kg sold = ${kg15Sold}</p>
+                                    <p>45 Kg sold = ${kg45Sold}</p>
+                                </div>
+    
+                                <div class="mt-3">
+                                    <p style="margin-top: 40px">Gas bought = ${totalFillingsPrice}</p>
+                                    <p>Sold = ${totalSalePrice}</p>
+                                    <p>Payment Received = ${paymentRec}</p>
+                                    <p>Expenses = ${expensesPrice}</p>                                
+                                    <p>Profit = ${netProfit}</p> 
+                                    <p>Cash In Hand = ${cashInHand}</p>                        
+                                </div>                                    
+                                `)
+                            }, 1000)
+
+                        })
+                                                
                     })                    
                 })
                 
@@ -204,6 +227,7 @@ updateViewReportHistory = (status) => {
 
         getSpecificSaleDetails(fromDate, toDate, (err, saleDetails) => {
             let totalSalePrice = 0
+            let totalSaleProfit = 0
             let kg11Sold = 0
             let kg15Sold = 0
             let kg45Sold = 0
@@ -221,6 +245,7 @@ updateViewReportHistory = (status) => {
 
             for(let i = 0; i < saleDetails.length; i++) {
                 totalSalePrice += saleDetails[i].sub_total
+                totalSaleProfit += saleDetails[i].sub_profit
                 if(saleDetails[i].cylinder_weight === 11) {
                     kg11Sold += saleDetails[i].number_of_cylinders
                 }
@@ -253,7 +278,7 @@ updateViewReportHistory = (status) => {
                         paymentRec += paymentReceived.amount
 
                         setTimeout(()=>{
-                            netProfit = totalSalePrice - totalFillingsPrice - expensesPrice
+                            netProfit = totalSaleProfit - expensesPrice
                             $(`#report`).append(`
                             <div class="mt-3">
                                 <p>11 Kg from Plant = ${kg11Fill}</p>
@@ -272,10 +297,10 @@ updateViewReportHistory = (status) => {
                                 <p>Sold = ${totalSalePrice}</p>
                                 <p>Payment Received = ${paymentRec}</p>
                                 <p>Expenses = ${expensesPrice}</p>                                
-                                <p>Profit = ${netProfit}</p>                        
+                                <p>Profit = ${netProfit}</p>                          
                             </div>                                    
                             `)
-                        }, 1000)                        
+                        }, 1000)                                        
                     })                    
                 })
                 
@@ -283,6 +308,99 @@ updateViewReportHistory = (status) => {
 
         })
 
+    }
+    else if(status == 'today') {
+        getTodaySaleDetails((err, saleDetails) => {
+            let totalSalePrice = 0
+            let totalSaleProfit = 0
+            let kg11Sold = 0
+            let kg15Sold = 0
+            let kg45Sold = 0
+
+            let totalFillingsPrice = 0
+            let kg11Fill = 0
+            let kg15Fill = 0
+            let kg45Fill = 0
+
+            let expensesPrice = 0
+
+            let paymentRec = 0
+
+            let cashInHand = 0
+
+            let netProfit
+
+            for(let i = 0; i < saleDetails.length; i++) {
+                totalSalePrice += saleDetails[i].sub_total
+                totalSaleProfit += saleDetails[i].sub_profit
+                if(saleDetails[i].cylinder_weight === 11) {
+                    kg11Sold += saleDetails[i].number_of_cylinders
+                }
+                else if(saleDetails[i].cylinder_weight === 15) {
+                    kg15Sold += saleDetails[i].number_of_cylinders
+                }
+                else {
+                    kg45Sold += saleDetails[i].number_of_cylinders
+                }
+            }
+
+            getTodayTotalExpenses((err, expenses)=>{
+                expensesPrice += expenses.total_expenses
+
+                getTodayFillingsPrice((err, fillingsData)=>{
+                    for(let i = 0; i < fillingsData.length; i++) {
+                        totalFillingsPrice += fillingsData[i].total_price
+                        if(fillingsData[i].cylinder_weight === 11) {
+                            kg11Fill += fillingsData[i].number_of_cylinders
+                        }
+                        else if(fillingsData[i].cylinder_weight === 15) {
+                            kg15Fill += fillingsData[i].number_of_cylinders
+                        }
+                        else {
+                            kg45Fill += fillingsData[i].number_of_cylinders
+                        }
+                    }
+
+                    getTodayPaymentReceived((err, paymentReceived)=>{
+                        paymentRec += paymentReceived.amount
+
+                        getCashInHand((err, cash)=>{
+                            cashInHand += cash.cash_in_hand
+                            
+                            setTimeout(()=>{
+                                netProfit = totalSaleProfit - expensesPrice
+                                $(`#report`).append(`
+                                <div class="mt-3">
+                                    <p>11 Kg from Plant = ${kg11Fill}</p>
+                                    <p>15 Kg from Plant = ${kg15Fill}</p>
+                                    <p>45 Kg from Plant = ${kg45Fill}</p>                                
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <p style="margin-top: 40px">11 Kg sold = ${kg11Sold}</p>
+                                    <p>15 Kg sold = ${kg15Sold}</p>
+                                    <p>45 Kg sold = ${kg45Sold}</p>
+                                </div>
+    
+                                <div class="mt-3">
+                                    <p style="margin-top: 40px">Gas bought = ${totalFillingsPrice}</p>
+                                    <p>Sold = ${totalSalePrice}</p>
+                                    <p>Payment Received = ${paymentRec}</p>
+                                    <p>Expenses = ${expensesPrice}</p>                                
+                                    <p>Profit = ${netProfit}</p>
+                                    <p>Cash In Hand = ${cashInHand}</p>                       
+                                </div>                                    
+                                `)
+                            }, 1000) 
+
+                        })
+                                               
+                    })                    
+                })
+                
+            })
+
+        })
     }
 }
 
