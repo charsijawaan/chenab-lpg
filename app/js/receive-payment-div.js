@@ -2,7 +2,9 @@ showReceivePaymentDiv = () => {
     hideAllDivs()
     resetReceivePaymentDiv()
     $(`#receive-payment-div`).append(`
-        <div><h2>Receive Payment</h2></div>
+        <div>
+            <h2>Receive Payment</h2>
+        </div>
         <div>
             <div style="text-align: center;">
                 <div class="mt-2">

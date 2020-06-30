@@ -24,6 +24,7 @@
     "release": "build"
   },
   "dependencies": {
+    "nodemailer": "^6.4.10",
     "sqlite3": "^4.0.9"
   },
   "devDependencies": {

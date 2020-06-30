@@ -850,3 +850,14 @@ function getSpecificPaymentReceived(fromDate, toDate, cb) {
         }
     })
 }
+
+function getCompanyByName(companyName, cb) {
+    db.get(`SELECT * FROM Customers WHERE company_name = ?`, [companyName], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}

@@ -52,16 +52,16 @@
 
             <div style="display: flex;justify-content: space-around;" class="mt-5">
                 <div>
-                    <h4>Market Money</h4>
+                    <h4 style="font-size: 18px;">Market Money</h4>
                     <p id="total-money-in-market"></p>
                 </div>
                 <div>
-                    <h4>Plant Money</h4>
+                    <h4 style="font-size: 18px;">Plant Money</h4>
                     <p id="plant-money-chenab"></p> 
                     <p id="plant-money-super"></p> 
                 </div>
                 <div>
-                    <h4>Profit Money</h4>
+                    <h4 style="font-size: 18px;">Profit Money</h4>
                     <p id="this-month-profit"></p>
                 </div>
                 
@@ -70,12 +70,12 @@
 
             <div style="display: flex;justify-content: space-around;">
                 <div class="market-money-tab-wrapper mt-5">
-                    <h2>Customer's</h2>
+                    <h4>Customer's</h4>
                     <div>
-                        <button class="btn btn-primary" onclick="showAddNewCustomerDiv()">Add New Customer</button>
+                        <button class="btn btn-primary" onclick="showAddNewCustomerDiv()">Add Customer</button>
                     </div>
                     <div>
-                        <button class="btn btn-primary mt-2" onclick="showSaleGasToCustomerDiv()">Sale Gas To Customer</button>
+                        <button class="btn btn-primary mt-2" onclick="showSaleGasToCustomerDiv()">Sale Cylinder</button>
                     </div>                    
                     <div>
                         <button class="btn btn-primary mt-2" onclick="showReceivePaymentDiv()">Receive Payment</button>
@@ -89,7 +89,7 @@
                 </div>
 
                 <div class="plant-money-tab-wrapper mt-5">
-                    <h2>Plant Money</h2>
+                    <h4>Plant Money</h4>
                     <div>
                         <button id="buy-gas-btn" class="btn btn-primary" onclick="showBuyGasDiv()">Buy Gas</button>                    
                     </div>
@@ -105,18 +105,22 @@
                 </div>
 
                 <div class="mt-5">
-                    <h2>Expenses</h2>
+                    <h4>Expenses</h4>
                     <div class="mt-2">
                         <button id="view-payment-history-btn" class="btn btn-primary" onclick="showAddExpenseDiv()">Add Expense</button>
                     </div>
                     <div class="mt-2">
                         <button id="view-payment-history-btn" class="btn btn-primary" onclick="" style="background-color: red;" disabled>View Expense History</button>
                     </div>    
-                    <h2>Report</h2>
+                    <h4 class="mt-2">Report</h4>
                     <div>
                         <button id="buy-gas-btn" class="btn btn-primary" onclick="showReportHistoryDiv()">View Report</button>                    
                     </div>
                 </div>
+            </div>
+
+            <div class="mb-4" style="position: absolute;bottom: 0;">
+                <button class="btn btn-primary" style="background-color: darkgreen; border: none;" onclick="uploadData()">Upload Data</button>
             </div>
 
         </div>
@@ -159,8 +163,8 @@
             </div>
 
             <div style="width: 100%;display: none;justify-content: center;flex-direction: column;
-                color: #ffffff;align-self: baseline;" id="sale-gas-to-customer-div">
-                    <!-- ADD NEW CUSTOMER DIV -->
+                color: #ffffff;align-self: baseline;align-items: center" id="sale-gas-to-customer-div">
+                    <!-- SALE GAS TO CUSTOMER -->
             </div>
 
             <div style="width: 100%;display: none;justify-content: center;flex-direction: column;
@@ -224,7 +228,7 @@
                 <div class="modal-footer">
                     <span id="edit-payment-history-mode"></span>
                     <button type="button" class="btn btn-secondary" id="edit-payment-history-close-btn" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="edit-payment-history-confirm-btn" onclick="updateEditPaymentHistory()">Save changes</button>
+                    <button type="button" class="btn btn-primary" id="edit-payment-history-confirm-btn" disabled onclick="updateEditPaymentHistory()">Save changes</button>
                 </div>
               </div>
             </div>
@@ -250,7 +254,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="edit-buy-history-close-btn" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="edit-buy-history-confirm-btn" onclick="updateEditBuyHistory()">Save changes</button>
+                    <button type="button" class="btn btn-primary" id="edit-buy-history-confirm-btn" disabled onclick="updateEditBuyHistory()">Save changes</button>
                 </div>
               </div>
             </div>
@@ -335,9 +339,27 @@
     <script src="./../js/popper.min.js"></script>
 
     <script>
-        let { remote } = require('electron'),
-        win = remote.getCurrentWindow();
-        dialog = remote.dialog;
+        let { remote, ipcRenderer } = require('electron')
+        win = remote.getCurrentWindow()
+        dialog = remote.dialog
+
+        ipcRenderer.on('file-uploaded-successfully', (event, message) => {
+            let options = {
+                type: 'info',
+                buttons: ['Okay'],
+                message: 'File Uploaded Successfully',
+                normalizeAccessKeys: true
+            }
+            dialog.showMessageBox(options, i => {
+                if (i == 0) {
+                    return
+                }
+            })
+        })
+
+        function uploadData() {
+            ipcRenderer.send('upload-data', 'start-upload')
+        }
     </script>
     
     <script src="./../js/buy-assets-div.js"></script>

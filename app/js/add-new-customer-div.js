@@ -75,24 +75,32 @@ addNewCustomer = () => {
         normalizeAccessKeys: true
     }
     dialog.showMessageBox(options, i => {
-        if (i == 0) {                    
-            addNewCustomerInDatabase(newCompanyName.toLowerCase(), newCustomerName, newPhoneNumber, newLimit, (err)=>{
-                $(`#add-new-customer-company-name-field`).val('')
-                $(`#add-new-customer-customer-name-field`).val('')
-                $(`#add-new-customer-phone-number-field`).val('')
-                $(`#add-new-customer-limit-field`).val('')
-                let options = {
-                    type: 'info',
-                    buttons: ['Okay'],
-                    message: `New customer has been added`,
-                    normalizeAccessKeys: true
+        if (i == 0) {        
+            getCompanyByName(newCompanyName, (err, data)=>{
+                if(data === undefined) {
+                    addNewCustomerInDatabase(newCompanyName.toLowerCase(), newCustomerName, newPhoneNumber, newLimit, (err)=>{
+                        $(`#add-new-customer-company-name-field`).val('')
+                        $(`#add-new-customer-customer-name-field`).val('')
+                        $(`#add-new-customer-phone-number-field`).val('')
+                        $(`#add-new-customer-limit-field`).val('')
+                        let options = {
+                            type: 'info',
+                            buttons: ['Okay'],
+                            message: `New customer has been added`,
+                            normalizeAccessKeys: true
+                        }
+                        dialog.showMessageBox(options, i => {
+                            if (i == 0) {
+                                return
+                            }
+                        })
+                    })
                 }
-                dialog.showMessageBox(options, i => {
-                    if (i == 0) {
-                        return
-                    }
-                })
+                else {
+                    showMsgDialog(`This company name already exists`)
+                }
             })
+            
         }
         else if(i == 1) {
             return

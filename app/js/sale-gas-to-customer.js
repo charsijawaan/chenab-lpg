@@ -6,25 +6,26 @@ showSaleGasToCustomerDiv = () => {
     getAllTypesOfCylinders((err, cylinderTypes) => {
         getAllPlants((err, allPlants) => {
             $(`#sale-gas-to-customer-div`).append(`
+
                 <div style="text-align: center;">
                     <h2>Sale Gas</h2>
                 </div>
-                <div>
-                    <div style="text-align: center;">
-                        <div class="mt-2">
-                            <label for="inp" class="inp">
-                            <input type="text" placeholder="&nbsp;" required id="customer-name-field-sale-gas"
-                             onkeydown="getCustomersFromDatabase('customer-name-field-sale-gas')">
-                            <span class="label">Enter Company Name</span>
-                            <span class="focus-bg"></span>
-                            </label>                
+                
+                <div style="text-align: center;">
+                    <div class="mt-2">
+                        <label for="inp" class="inp">
+                        <input type="text" placeholder="&nbsp;" required id="customer-name-field-sale-gas"
+                        onkeydown="getCustomersFromDatabase('customer-name-field-sale-gas')">
+                        <span class="label">Enter Company Name</span>
+                        <span class="focus-bg"></span>
+                        </label>                
+                    </div>
 
-                            <div style="text-align: center;display: flex; flex-direction: column;" id="select-company-div-wrapper">
-                                <!-- html changes here while searching
-                            </div>
-                        </div>                        
-                    </div>                
-            </div>
+                    <div style="text-align: center;display: flex; flex-direction: column;" id="select-company-div-wrapper">
+                        <!-- html changes here while searching -->
+                    </div>
+                </div>
+
             `)
 
             // select plant portion starts here
