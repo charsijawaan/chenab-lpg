@@ -10,13 +10,13 @@ showCustomerDetailsDiv = () => {
             <div class="mt-2">
                 <label for="inp" class="inp">
                 <input type="text" placeholder="&nbsp;" required id="customer-name-field-customer-details"
-                 onkeydown="getCustomersFromDatabase('customer-name-field-customer-details')">
+                 onkeydown="getCustomersFromDatabase('customer-name-field-customer-details', 'select-company-div-wrapper-customer-details')">
                 <span class="label">Enter Company Name</span>
                 <span class="focus-bg"></span>
                 </label>                
             </div>
         </div>
-        <div style="text-align: center;display: flex; flex-direction: column;" id="select-company-div-wrapper">
+        <div style="text-align: center;display: flex; flex-direction: column;" id="select-company-div-wrapper-customer-details">
             <!-- html changes here while searching -->
         </div>
     </div>

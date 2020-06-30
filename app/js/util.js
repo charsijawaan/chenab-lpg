@@ -166,15 +166,15 @@ showMsgDialog = (msg) => {
     })
 }
 
-getCustomersFromDatabase = (id) => {
-    $(`#select-company-div-wrapper`).html('')
+getCustomersFromDatabase = (id, wrapperID) => {
+    $(`#${wrapperID}`).html('')
     let name = $(`#${id}`).val()
     getCustomersByName(name, (err, names) => {
         for (let i = 0; i < names.length; i++) {
-            $(`#select-company-div-wrapper`).append(`
+            $(`#${wrapperID}`).append(`
             <div style="color: #000; background-color: #fff;border: 3px solid black;">
                 <span data-id="${names[i].customer_id}" data-name="${names[i].company_name}" 
-                style="cursor: pointer;" onclick="selectCustomer(this, '${id}')">${names[i].company_name}</span>
+                style="cursor: pointer;" onclick="selectCustomer(this, '${id}', '${wrapperID}')">${names[i].company_name}</span>
             </div>                
             `)
         }
@@ -182,9 +182,9 @@ getCustomersFromDatabase = (id) => {
 }
 
 
-selectCustomer = (customerSpan, id) => {
+selectCustomer = (customerSpan, id, wrapperID) => {
     let customerID = $(customerSpan).attr('data-id')
     let customerName = $(customerSpan).attr('data-name')
     $(`#${id}`).val(customerName)
-    $(`#select-company-div-wrapper`).html('')
+    $(`#${wrapperID}`).html('')
 }
