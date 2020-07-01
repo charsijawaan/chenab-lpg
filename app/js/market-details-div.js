@@ -6,9 +6,10 @@ showMarketDetailsDiv = () => {
         <h2>Market Details</h2>
     </div>
     <div class="mt-4" style="width: 100%">
-        <table class="table" style="color: #ffffff;text-align: center;">
+        <table class="table table-bordered table-dark market-details-table" style="color: #ffffff;text-align: center;">
             <thead>
                 <tr>
+                    <th scope="col">#</th>
                     <th scope="col">Company Name</th>
                     <th scope="col">Customer Name</th>
                     <th scope="col">Pending Amount</th>
@@ -91,7 +92,7 @@ generateMarketTable = () => {
                 }
             })
 
-            record['company_name'] = data[i].company_name
+            record['company_name'] = titleCase(data[i].company_name)
             if(data[i].customer_name != null) {
                 record['customer_name'] = data[i].customer_name
             }            
@@ -102,11 +103,12 @@ generateMarketTable = () => {
                 color = 'red'
             }
             else {
-                color = 'green'
+                color = 'white'
             }
             setTimeout(()=>{
                 $(`#view-market-details-table`).append(`
                 <tr style="color: ${color}; font-weight: bold; font-size: 17px;">
+                    <td>${i + 1}</td>
                     <td>${record['company_name']}</td>
                     <td>${record['customer_name']}</td>
                     <td>${record['total_pending_amount']}</td>

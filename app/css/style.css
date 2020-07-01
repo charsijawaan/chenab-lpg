@@ -266,3 +266,11 @@ ul li {
 *:before, *:after {
 	box-sizing: inherit;
 }
+
+.market-details-table th {
+	position: -webkit-sticky;
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	background-color: #444444;
+}

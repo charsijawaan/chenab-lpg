@@ -112,8 +112,7 @@ updateViewReportHistory = (status) => {
                                     <p>Sold = ${totalSalePrice}</p>
                                     <p>Payment Received = ${paymentRec}</p>
                                     <p>Expenses = ${expensesPrice}</p>                                
-                                    <p>Profit = ${netProfit}</p>
-                                    <p>Cash In Hand = ${cashInHand}</p>                       
+                                    <p>Profit = ${netProfit}</p>                    
                                 </div>                                    
                                 `)
                             }, 1000) 
@@ -205,8 +204,7 @@ updateViewReportHistory = (status) => {
                                     <p>Sold = ${totalSalePrice}</p>
                                     <p>Payment Received = ${paymentRec}</p>
                                     <p>Expenses = ${expensesPrice}</p>                                
-                                    <p>Profit = ${netProfit}</p> 
-                                    <p>Cash In Hand = ${cashInHand}</p>                        
+                                    <p>Profit = ${netProfit}</p>                     
                                 </div>                                    
                                 `)
                             }, 1000)
