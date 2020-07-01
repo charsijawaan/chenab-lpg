@@ -59,7 +59,7 @@ generateMarketTable = () => {
                     record['11_kg_cylinders_chenab'] = num[1].number_of_cylinders
                 }
                 if(num[1].plant_id === 2) {
-                    record['11_kg_cylinders_super'] = num[2].number_of_cylinders
+                    record['11_kg_cylinders_super'] = num[1].number_of_cylinders
                 }
             })
             getNumberOfCylindersinPossesion(data[i].customer_id, 15, (err,num)=>{
@@ -73,7 +73,7 @@ generateMarketTable = () => {
                     record['15_kg_cylinders_chenab'] = num[1].number_of_cylinders
                 }
                 if(num[1].plant_id === 2) {
-                    record['15_kg_cylinders_super'] = num[2].number_of_cylinders
+                    record['15_kg_cylinders_super'] = num[1].number_of_cylinders
                 }
             })
             getNumberOfCylindersinPossesion(data[i].customer_id, 45, (err,num)=>{
@@ -87,7 +87,7 @@ generateMarketTable = () => {
                     record['45_kg_cylinders_chenab'] = num[1].number_of_cylinders
                 }
                 if(num[1].plant_id === 2) {
-                    record['45_kg_cylinders_super'] = num[2].number_of_cylinders
+                    record['45_kg_cylinders_super'] = num[1].number_of_cylinders
                 }
             })
 
