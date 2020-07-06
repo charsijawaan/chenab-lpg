@@ -466,6 +466,17 @@ function getTotalMoneyInMarket(cb) {
     })
 }
 
+function getTodayMoneyInMarket(cb) {
+    db.all(``, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
 function getTotalCylindersInMarket(cylinderWeight, cb) {
     db.all(`SELECT SUM(number_of_cylinders) as total_cylinders FROM CylindersInMarket 
             WHERE cylinder_weight = ${cylinderWeight}`, [], (err, data) => {
@@ -875,6 +886,17 @@ function getCashInHand(cb) {
     })
 }
 
+function getCurrentCashInHand(cb) {
+    db.get(`SELECT * FROM CurrentCash`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
 function getSpecificDateCashInHand(fromDate, toDate, cb) {
     fromDate += ` 23:59:59`
     console.log(fromDate)
@@ -1009,6 +1031,50 @@ function editCompanyDetailsExceptName(customerID, customerName, companyNumber, c
         }
         else {
             cb(null, res)
+        }
+    })
+}
+
+function getAllPlantMoney(cb) {
+    db.get(`SELECT SUM(total_plant_money) AS plant_money FROM PlantMoney`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getAllExpenses(cb) {
+    db.get(`SELECT SUM(expense_price) AS total_expenses_money FROM Expenses`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getTodayExpenses(cb) {
+    db.get(``, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getTotalStockMoney(cb) {
+    db.get(`SELECT SUM(number_of_cylinders * buy_rate) as stock_money FROM Stock;`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
         }
     })
 }

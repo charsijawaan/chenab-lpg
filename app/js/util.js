@@ -123,12 +123,59 @@ updateProfitNumberGUI = () => {
     })
 }
 
+updateBusinessNumberInGUI = () => {
+    let totalMarketMoney = 0
+    let totalPlantMoney = 0
+    let totalExpenses = 0
+    let cashInHand = 0
+    let totalStockMoney = 0
+
+    let business = 0
+
+    getTotalMoneyInMarket((err, data) => {
+        totalMarketMoney += data[0].pending_amount
+        getAllPlantMoney((err, data) => {
+            totalPlantMoney += data.plant_money
+            getAllExpenses((err, data) => {
+                totalExpenses = data.total_expenses_money
+                getCurrentCashInHand((err, data) => {
+                    cashInHand += data.current_cash
+                    getTotalStockMoney((err, data) => {
+                        totalStockMoney += data.stock_money
+
+                        let revenue = totalMarketMoney + cashInHand + totalStockMoney
+                        let investment = totalPlantMoney + totalExpenses
+
+                        business = revenue - investment
+
+                        if(business > 0) {
+                            $(`#business`).css('color', 'white')
+                            $(`#business`).html(`
+                                In Profit : 
+                                ${business}
+                            `)
+                        }
+                        else {
+                            $(`#business`).html(`
+                            In Loss :
+                                ${business}
+                            `)
+                            $(`#business`).css('color', 'red')
+                        }
+                    })
+                })
+            })
+        })
+    })
+}
+
 updateMainWindowGUI = () => {
     updateStockNumberGUI()
     updatePlantMoneyNumberGUI()
     updateMarketMoneyNumberGUI()
     updateAssetsNumberGUI()
     updateProfitNumberGUI()
+    updateBusinessNumberInGUI()
 }
 
 // when ever a button is pressed all the extra divs are hided

@@ -116,7 +116,8 @@ updateViewReportHistory = (status) => {
             })
 
         })
-    } else if (status == 'fetchAll') {
+    }
+    else if (status == 'fetchAll') {
         getAllSaleDetails((err, saleDetails) => {
 
             let totalSalePrice = 0
@@ -198,7 +199,8 @@ updateViewReportHistory = (status) => {
             })
 
         })
-    } else if (status == 'datepicker') {
+    }
+    else if (status == 'datepicker') {
 
         let fromDate = $('#view-report-history-from').val()
         let toDate = $('#view-report-history-to').val()
@@ -305,7 +307,8 @@ updateViewReportHistory = (status) => {
 
         })
 
-    } else if (status == 'today') {
+    }
+    else if (status == 'today') {
         getTodaySaleDetails((err, saleDetails) => {
 
             let totalSalePrice = 0
@@ -326,6 +329,10 @@ updateViewReportHistory = (status) => {
             let cashInHand = 0
 
             let netProfit
+
+            let totalMarketMoney = 0
+            let totalPlantMoney = 0
+            let totalExpenses = 0
 
             for (let i = 0; i < saleDetails.length; i++) {
                 totalSalePrice += saleDetails[i].sub_total
@@ -384,14 +391,13 @@ updateViewReportHistory = (status) => {
                                     <p>Cash In Hand = ${cashInHand}</p>                       
                                 </div>                                    
                                 `)
+                                })
+                            })
+
                         })
 
                     })
                 })
-
-            })
-
-        })
     }
 }
 
