@@ -60,6 +60,7 @@ updateAssetsNumberGUI = () => {
 
 updateProfitNumberGUI = () => {
     getThisMonthSaleDetails((err, saleDetails) => {
+
         let totalSaleProfit = 0
         let kg11Sold = 0
         let kg15Sold = 0
@@ -87,10 +88,12 @@ updateProfitNumberGUI = () => {
             }
         }
 
-        getThisMonthTotalExpenses((err, expenses)=>{
+        getThisMonthTotalExpenses((err, expenses) => {
+
             expensesPrice += expenses.total_expenses
 
-            getThisMonthFillingsPrice((err, fillingsData)=>{
+            getThisMonthFillingsPrice((err, fillingsData) => {
+
                 for(let i = 0; i < fillingsData.length; i++) {
                     totalFillingsPrice += fillingsData[i].total_price
                     if(fillingsData[i].cylinder_weight === 11) {
@@ -104,16 +107,15 @@ updateProfitNumberGUI = () => {
                     }
                 }
 
-                setTimeout(()=>{
-                    if(netProfit > 0) {
-                        $(`#this-month-profit`).css('color', 'green')    
-                    }
-                    else {
-                        $(`#this-month-profit`).css('color', 'red')    
-                    }
-                    $(`#this-month-profit`).html(`${netProfit} Rs/-`)
-                }, 1000)
                 netProfit = totalSaleProfit - expensesPrice
+                if(netProfit > 0) {
+                    $(`#this-month-profit`).css('color', 'green')
+                }
+                else {
+                    $(`#this-month-profit`).css('color', 'red')
+                }
+                $(`#this-month-profit`).html(`${netProfit} Rs/-`)
+
             })
             
         })

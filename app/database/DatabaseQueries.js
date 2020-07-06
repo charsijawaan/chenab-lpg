@@ -865,7 +865,22 @@ function getCompanyByName(companyName, cb) {
 }
 
 function getCashInHand(cb) {
-    db.get(`SELECT * FROM Cash WHERE cash_id = 1`, [], (err, data) => {
+    db.get(`SELECT * FROM CurrentCash WHERE cash_id = 1`, [], (err, data) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
+    })
+}
+
+function getSpecificDateCashInHand(fromDate, toDate, cb) {
+    fromDate += ` 23:59:59`
+    console.log(fromDate)
+    db.all(`SELECT *, strftime('%Y-%m-%d 23:59:59', datetime(Cash.cash_date/1000, 'unixepoch')) 
+            as date FROM Cash WHERE date = strftime('${fromDate}', datetime(Cash.cash_date/1000, 'unixepoch')) 
+            ORDER BY cash_id DESC`, [], (err, data) => {
         if (err) {
             console.log(err.message)
         }

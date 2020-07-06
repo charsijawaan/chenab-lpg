@@ -33,9 +33,11 @@ showReportHistoryDiv = () => {
 
 
 updateViewReportHistory = (status) => {
-    $('#report').html('')    
+
+    $('#report').html('')
     if (status == 'thisMonth') {
         getThisMonthSaleDetails((err, saleDetails) => {
+
             let totalSalePrice = 0
             let totalSaleProfit = 0
             let kg11Sold = 0
@@ -51,83 +53,72 @@ updateViewReportHistory = (status) => {
 
             let paymentRec = 0
 
-            let cashInHand = 0
-
             let netProfit
 
-            for(let i = 0; i < saleDetails.length; i++) {
+            for (let i = 0; i < saleDetails.length; i++) {
                 totalSalePrice += saleDetails[i].sub_total
                 totalSaleProfit += saleDetails[i].sub_profit
-                if(saleDetails[i].cylinder_weight === 11) {
+                if (saleDetails[i].cylinder_weight === 11) {
                     kg11Sold += saleDetails[i].number_of_cylinders
-                }
-                else if(saleDetails[i].cylinder_weight === 15) {
+                } else if (saleDetails[i].cylinder_weight === 15) {
                     kg15Sold += saleDetails[i].number_of_cylinders
-                }
-                else {
+                } else {
                     kg45Sold += saleDetails[i].number_of_cylinders
                 }
             }
 
-            getThisMonthTotalExpenses((err, expenses)=>{
+            getThisMonthTotalExpenses((err, expenses) => {
+
                 expensesPrice += expenses.total_expenses
 
-                getThisMonthFillingsPrice((err, fillingsData)=>{
-                    for(let i = 0; i < fillingsData.length; i++) {
+                getThisMonthFillingsPrice((err, fillingsData) => {
+                    for (let i = 0; i < fillingsData.length; i++) {
                         totalFillingsPrice += fillingsData[i].total_price
-                        if(fillingsData[i].cylinder_weight === 11) {
+                        if (fillingsData[i].cylinder_weight === 11) {
                             kg11Fill += fillingsData[i].number_of_cylinders
-                        }
-                        else if(fillingsData[i].cylinder_weight === 15) {
+                        } else if (fillingsData[i].cylinder_weight === 15) {
                             kg15Fill += fillingsData[i].number_of_cylinders
-                        }
-                        else {
+                        } else {
                             kg45Fill += fillingsData[i].number_of_cylinders
                         }
                     }
 
-                    getThisMonthPaymentReceived((err, paymentReceived)=>{
+                    getThisMonthPaymentReceived((err, paymentReceived) => {
+
                         paymentRec += paymentReceived.amount
 
-                        getCashInHand((err, cash)=>{
-                            cashInHand += cash.cash_in_hand
-                            
-                            setTimeout(()=>{
-                                netProfit = totalSaleProfit - expensesPrice
-                                $(`#report`).append(`
-                                <div class="mt-3">
-                                    <p>11 Kg from Plant = ${kg11Fill}</p>
-                                    <p>15 Kg from Plant = ${kg15Fill}</p>
-                                    <p>45 Kg from Plant = ${kg45Fill}</p>                                
-                                </div>
-                                
-                                <div class="mt-3">
-                                    <p style="margin-top: 40px">11 Kg sold = ${kg11Sold}</p>
-                                    <p>15 Kg sold = ${kg15Sold}</p>
-                                    <p>45 Kg sold = ${kg45Sold}</p>
-                                </div>
-    
-                                <div class="mt-3">
-                                    <p style="margin-top: 40px">Gas bought = ${totalFillingsPrice}</p>
-                                    <p>Sold = ${totalSalePrice}</p>
-                                    <p>Payment Received = ${paymentRec}</p>
-                                    <p>Expenses = ${expensesPrice}</p>                                
-                                    <p>Profit = ${netProfit}</p>                    
-                                </div>                                    
-                                `)
-                            }, 1000) 
+                        netProfit = totalSaleProfit - expensesPrice
+                        $(`#report`).append(`
+                        <div class="mt-3">
+                            <p>11 Kg from Plant = ${kg11Fill}</p>
+                            <p>15 Kg from Plant = ${kg15Fill}</p>
+                            <p>45 Kg from Plant = ${kg45Fill}</p>                                
+                        </div>
+                        
+                        <div class="mt-3">
+                            <p style="margin-top: 40px">11 Kg sold = ${kg11Sold}</p>
+                            <p>15 Kg sold = ${kg15Sold}</p>
+                            <p>45 Kg sold = ${kg45Sold}</p>
+                        </div>
 
-                        })
-                                               
-                    })                    
+                        <div class="mt-3">
+                            <p style="margin-top: 40px">Gas bought = ${totalFillingsPrice}</p>
+                            <p>Sold = ${totalSalePrice}</p>
+                            <p>Payment Received = ${paymentRec}</p>
+                            <p>Expenses = ${expensesPrice}</p>                                
+                            <p>Profit = ${netProfit}</p>                    
+                        </div>                                    
+                                `)
+
+                    })
                 })
-                
+
             })
 
         })
-    }
-    else if(status == 'fetchAll') {
+    } else if (status == 'fetchAll') {
         getAllSaleDetails((err, saleDetails) => {
+
             let totalSalePrice = 0
             let totalSaleProfit = 0
             let kg11Sold = 0
@@ -143,82 +134,71 @@ updateViewReportHistory = (status) => {
 
             let paymentRec = 0
 
-            let cashInHand = 0
-
             let netProfit
 
-            for(let i = 0; i < saleDetails.length; i++) {
+            for (let i = 0; i < saleDetails.length; i++) {
                 totalSalePrice += saleDetails[i].sub_total
                 totalSaleProfit += saleDetails[i].sub_profit
-                if(saleDetails[i].cylinder_weight === 11) {
+                if (saleDetails[i].cylinder_weight === 11) {
                     kg11Sold += saleDetails[i].number_of_cylinders
-                }
-                else if(saleDetails[i].cylinder_weight === 15) {
+                } else if (saleDetails[i].cylinder_weight === 15) {
                     kg15Sold += saleDetails[i].number_of_cylinders
-                }
-                else {
+                } else {
                     kg45Sold += saleDetails[i].number_of_cylinders
                 }
             }
 
-            getAllTotalExpenses((err, expenses)=>{
+            getAllTotalExpenses((err, expenses) => {
+
                 expensesPrice += expenses.total_expenses
 
-                getAllFillingsPrice((err, fillingsData)=>{
-                    for(let i = 0; i < fillingsData.length; i++) {
+                getAllFillingsPrice((err, fillingsData) => {
+
+                    for (let i = 0; i < fillingsData.length; i++) {
                         totalFillingsPrice += fillingsData[i].total_price
-                        if(fillingsData[i].cylinder_weight === 11) {
+                        if (fillingsData[i].cylinder_weight === 11) {
                             kg11Fill += fillingsData[i].number_of_cylinders
-                        }
-                        else if(fillingsData[i].cylinder_weight === 15) {
+                        } else if (fillingsData[i].cylinder_weight === 15) {
                             kg15Fill += fillingsData[i].number_of_cylinders
-                        }
-                        else {
+                        } else {
                             kg45Fill += fillingsData[i].number_of_cylinders
                         }
                     }
 
-                    getAllPaymentReceived((err, paymentReceived)=>{
+                    getAllPaymentReceived((err, paymentReceived) => {
+
                         paymentRec += paymentReceived.amount
 
-                        getCashInHand((err, cash)=> {
-                            cashInHand += cash.cash_in_hand
+                        netProfit = totalSaleProfit - expensesPrice
+                        $(`#report`).append(`
+                        <div class="mt-3">
+                            <p>11 Kg from Plant = ${kg11Fill}</p>
+                            <p>15 Kg from Plant = ${kg15Fill}</p>
+                            <p>45 Kg from Plant = ${kg45Fill}</p>                                
+                        </div>
+                        
+                        <div class="mt-3">
+                            <p style="margin-top: 40px">11 Kg sold = ${kg11Sold}</p>
+                            <p>15 Kg sold = ${kg15Sold}</p>
+                            <p>45 Kg sold = ${kg45Sold}</p>
+                        </div>
 
-                            setTimeout(()=>{
-                                netProfit = totalSaleProfit - expensesPrice
-                                $(`#report`).append(`
-                                <div class="mt-3">
-                                    <p>11 Kg from Plant = ${kg11Fill}</p>
-                                    <p>15 Kg from Plant = ${kg15Fill}</p>
-                                    <p>45 Kg from Plant = ${kg45Fill}</p>                                
-                                </div>
-                                
-                                <div class="mt-3">
-                                    <p style="margin-top: 40px">11 Kg sold = ${kg11Sold}</p>
-                                    <p>15 Kg sold = ${kg15Sold}</p>
-                                    <p>45 Kg sold = ${kg45Sold}</p>
-                                </div>
-    
-                                <div class="mt-3">
-                                    <p style="margin-top: 40px">Gas bought = ${totalFillingsPrice}</p>
-                                    <p>Sold = ${totalSalePrice}</p>
-                                    <p>Payment Received = ${paymentRec}</p>
-                                    <p>Expenses = ${expensesPrice}</p>                                
-                                    <p>Profit = ${netProfit}</p>                     
-                                </div>                                    
+                        <div class="mt-3">
+                            <p style="margin-top: 40px">Gas bought = ${totalFillingsPrice}</p>
+                            <p>Sold = ${totalSalePrice}</p>
+                            <p>Payment Received = ${paymentRec}</p>
+                            <p>Expenses = ${expensesPrice}</p>                                
+                            <p>Profit = ${netProfit}</p>                     
+                        </div>                                    
                                 `)
-                            }, 1000)
 
-                        })
-                                                
-                    })                    
+                    })
                 })
-                
+
             })
 
         })
-    }
-    else if(status == 'datepicker') {
+    } else if (status == 'datepicker') {
 
         let fromDate = $('#view-report-history-from').val()
         let toDate = $('#view-report-history-to').val()
@@ -238,77 +218,97 @@ updateViewReportHistory = (status) => {
             let expensesPrice = 0
 
             let paymentRec = 0
-
+            let cash = 0
             let netProfit
 
-            for(let i = 0; i < saleDetails.length; i++) {
+            for (let i = 0; i < saleDetails.length; i++) {
                 totalSalePrice += saleDetails[i].sub_total
                 totalSaleProfit += saleDetails[i].sub_profit
-                if(saleDetails[i].cylinder_weight === 11) {
+                if (saleDetails[i].cylinder_weight === 11) {
                     kg11Sold += saleDetails[i].number_of_cylinders
-                }
-                else if(saleDetails[i].cylinder_weight === 15) {
+                } else if (saleDetails[i].cylinder_weight === 15) {
                     kg15Sold += saleDetails[i].number_of_cylinders
-                }
-                else {
+                } else {
                     kg45Sold += saleDetails[i].number_of_cylinders
                 }
             }
 
-            getSpecificTotalExpenses(fromDate, toDate,(err, expenses)=>{
+            getSpecificTotalExpenses(fromDate, toDate, (err, expenses) => {
                 expensesPrice += expenses.total_expenses
 
-                getSpecificFillingsPrice(fromDate, toDate, (err, fillingsData)=>{
-                    for(let i = 0; i < fillingsData.length; i++) {
+                getSpecificFillingsPrice(fromDate, toDate, (err, fillingsData) => {
+                    for (let i = 0; i < fillingsData.length; i++) {
                         totalFillingsPrice += fillingsData[i].total_price
-                        if(fillingsData[i].cylinder_weight === 11) {
+                        if (fillingsData[i].cylinder_weight === 11) {
                             kg11Fill += fillingsData[i].number_of_cylinders
-                        }
-                        else if(fillingsData[i].cylinder_weight === 15) {
+                        } else if (fillingsData[i].cylinder_weight === 15) {
                             kg15Fill += fillingsData[i].number_of_cylinders
-                        }
-                        else {
+                        } else {
                             kg45Fill += fillingsData[i].number_of_cylinders
                         }
                     }
 
-                    getSpecificPaymentReceived(fromDate, toDate, (err, paymentReceived)=>{
+                    getSpecificPaymentReceived(fromDate, toDate, (err, paymentReceived) => {
                         paymentRec += paymentReceived.amount
 
-                        setTimeout(()=>{
-                            netProfit = totalSaleProfit - expensesPrice
-                            $(`#report`).append(`
-                            <div class="mt-3">
-                                <p>11 Kg from Plant = ${kg11Fill}</p>
-                                <p>15 Kg from Plant = ${kg15Fill}</p>
-                                <p>45 Kg from Plant = ${kg45Fill}</p>                                
-                            </div>
-                            
-                            <div class="mt-3">
-                                <p style="margin-top: 40px">11 Kg sold = ${kg11Sold}</p>
-                                <p>15 Kg sold = ${kg15Sold}</p>
-                                <p>45 Kg sold = ${kg45Sold}</p>
-                            </div>
+                        netProfit = totalSaleProfit - expensesPrice
+                        $(`#report`).append(`
+                                    <div class="mt-3">
+                                        <p>11 Kg from Plant = ${kg11Fill}</p>
+                                        <p>15 Kg from Plant = ${kg15Fill}</p>
+                                        <p>45 Kg from Plant = ${kg45Fill}</p>                                
+                                    </div>
+                                    
+                                    <div class="mt-3">
+                                        <p style="margin-top: 40px">11 Kg sold = ${kg11Sold}</p>
+                                        <p>15 Kg sold = ${kg15Sold}</p>
+                                        <p>45 Kg sold = ${kg45Sold}</p>
+                                    </div>
+            
+                                    <div class="mt-3">
+                                        <p style="margin-top: 40px">Gas bought = ${totalFillingsPrice}</p>
+                                        <p>Sold = ${totalSalePrice}</p>
+                                        <p>Payment Received = ${paymentRec}</p>
+                                        <p>Expenses = ${expensesPrice}</p>                                         
+                                `)
 
-                            <div class="mt-3">
-                                <p style="margin-top: 40px">Gas bought = ${totalFillingsPrice}</p>
-                                <p>Sold = ${totalSalePrice}</p>
-                                <p>Payment Received = ${paymentRec}</p>
-                                <p>Expenses = ${expensesPrice}</p>                                
-                                <p>Profit = ${netProfit}</p>                          
-                            </div>                                    
-                            `)
-                        }, 1000)                                        
-                    })                    
+                        $(`#report`).append(`                                                            
+                                    <p>Profit = ${netProfit}</p>                          
+                                `)
+
+                        if (fromDate === toDate) {
+                            $(`#report`).append(`
+                                        <p id="cash-in-hand">Cash in Hand = ${cash}</p>
+                                        </div>
+                                    `)
+                        }
+                        else {
+                            $(`#report`).append(`
+                                        </div>
+                                    `)
+                        }
+
+                        if (fromDate === toDate) {
+                            getSpecificDateCashInHand(fromDate, toDate, (err, cashData) => {
+
+                                if(cashData != undefined) {
+                                    cash += cashData[0].cash_in_hand
+                                }
+
+                                $(`#cash-in-hand`).html(`Cash In Hand = ${cash}`)
+
+                            })
+                        }
+                    })
                 })
-                
+
             })
 
         })
 
-    }
-    else if(status == 'today') {
+    } else if (status == 'today') {
         getTodaySaleDetails((err, saleDetails) => {
+
             let totalSalePrice = 0
             let totalSaleProfit = 0
             let kg11Sold = 0
@@ -328,46 +328,42 @@ updateViewReportHistory = (status) => {
 
             let netProfit
 
-            for(let i = 0; i < saleDetails.length; i++) {
+            for (let i = 0; i < saleDetails.length; i++) {
                 totalSalePrice += saleDetails[i].sub_total
                 totalSaleProfit += saleDetails[i].sub_profit
-                if(saleDetails[i].cylinder_weight === 11) {
+                if (saleDetails[i].cylinder_weight === 11) {
                     kg11Sold += saleDetails[i].number_of_cylinders
-                }
-                else if(saleDetails[i].cylinder_weight === 15) {
+                } else if (saleDetails[i].cylinder_weight === 15) {
                     kg15Sold += saleDetails[i].number_of_cylinders
-                }
-                else {
+                } else {
                     kg45Sold += saleDetails[i].number_of_cylinders
                 }
             }
 
-            getTodayTotalExpenses((err, expenses)=>{
+            getTodayTotalExpenses((err, expenses) => {
                 expensesPrice += expenses.total_expenses
 
-                getTodayFillingsPrice((err, fillingsData)=>{
-                    for(let i = 0; i < fillingsData.length; i++) {
+                getTodayFillingsPrice((err, fillingsData) => {
+                    for (let i = 0; i < fillingsData.length; i++) {
                         totalFillingsPrice += fillingsData[i].total_price
-                        if(fillingsData[i].cylinder_weight === 11) {
+                        if (fillingsData[i].cylinder_weight === 11) {
                             kg11Fill += fillingsData[i].number_of_cylinders
-                        }
-                        else if(fillingsData[i].cylinder_weight === 15) {
+                        } else if (fillingsData[i].cylinder_weight === 15) {
                             kg15Fill += fillingsData[i].number_of_cylinders
-                        }
-                        else {
+                        } else {
                             kg45Fill += fillingsData[i].number_of_cylinders
                         }
                     }
 
-                    getTodayPaymentReceived((err, paymentReceived)=>{
+                    getTodayPaymentReceived((err, paymentReceived) => {
+
                         paymentRec += paymentReceived.amount
 
-                        getCashInHand((err, cash)=>{
-                            cashInHand += cash.cash_in_hand
-                            
-                            setTimeout(()=>{
-                                netProfit = totalSaleProfit - expensesPrice
-                                $(`#report`).append(`
+                        getCashInHand((err, cash) => {
+                            cashInHand += cash.current_cash
+
+                            netProfit = totalSaleProfit - expensesPrice
+                            $(`#report`).append(`
                                 <div class="mt-3">
                                     <p>11 Kg from Plant = ${kg11Fill}</p>
                                     <p>15 Kg from Plant = ${kg15Fill}</p>
@@ -389,13 +385,11 @@ updateViewReportHistory = (status) => {
                                     <p>Cash In Hand = ${cashInHand}</p>                       
                                 </div>                                    
                                 `)
-                            }, 1000) 
-
                         })
-                                               
-                    })                    
+
+                    })
                 })
-                
+
             })
 
         })
@@ -403,14 +397,13 @@ updateViewReportHistory = (status) => {
 }
 
 enableReportHistoryDates = () => {
-    if($('#view-report-history-date-checkbox').prop('checked')) {
+    if ($('#view-report-history-date-checkbox').prop('checked')) {
         $('#view-report-history-from').prop('disabled', false)
         $('#view-report-history-to').prop('disabled', false)
         $('#view-report-history-datepicker-btn').prop('disabled', false)
-    }
-    else {
+    } else {
         $('#view-report-history-from').prop('disabled', true)
         $('#view-report-history-to').prop('disabled', true)
-        $('#view-report-history-datepicker-btn').prop('disabled', true)   
+        $('#view-report-history-datepicker-btn').prop('disabled', true)
     }
 }
