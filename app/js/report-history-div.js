@@ -272,27 +272,26 @@ updateViewReportHistory = (status) => {
                                         <p>Expenses = ${expensesPrice}</p>                                         
                                 `)
 
-                        $(`#report`).append(`                                                            
+                                $(`#report`).append(`                                                            
                                     <p>Profit = ${netProfit}</p>                          
                                 `)
 
-                        if (fromDate === toDate) {
-                            $(`#report`).append(`
+                                if (fromDate === toDate) {
+                                    $(`#report`).append(`
                                         <p id="cash-in-hand">Cash in Hand = ${cash}</p>
                                         </div>
                                     `)
-                        }
-                        else {
-                            $(`#report`).append(`
+                                }
+                                else {
+                                    $(`#report`).append(`
                                         </div>
                                     `)
-                        }
+                                }
 
-                        if (fromDate === toDate) {
-                            getSpecificDateCashInHand(fromDate, toDate, (err, cashData) => {
-
-                                if(cashData != undefined) {
-                                    cash += cashData[0].cash_in_hand
+                                if (fromDate === toDate) {
+                                    getSpecificDateCashInHand(fromDate, toDate, (err, cashData) => {
+                                        if(cashData != undefined) {
+                                        cash += cashData[0].cash_in_hand
                                 }
 
                                 $(`#cash-in-hand`).html(`Cash In Hand = ${cash}`)

@@ -981,3 +981,34 @@ function getSpecificExpenseHistory(fromDate, toDate, cb) {
         }
     })
 }
+
+function editCompanyDetails(customerID, companyName, customerName, companyNumber, companyLimit, cb) {
+    if(companyNumber === ``) {
+        companyNumber = null
+    }
+    db.run(`UPDATE Customers SET company_name = '${companyName}', 
+            customer_name = '${customerName}', phone_number = ${companyNumber}, 
+            [limit] = ${companyLimit} WHERE customer_id = ${customerID}`, [], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}
+
+function editCompanyDetailsExceptName(customerID, customerName, companyNumber, companyLimit, cb) {
+    if(companyNumber === ``) {
+        companyNumber = null
+    }
+    db.run(`UPDATE Customers SET customer_name = '${customerName}', phone_number = ${companyNumber}, 
+            [limit] = ${companyLimit} WHERE customer_id = ${customerID}`, [], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, res)
+        }
+    })
+}

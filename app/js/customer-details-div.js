@@ -64,25 +64,55 @@ showCompanyDetails = () => {
                 customerData[0].phone_number = ''
             }
             $(`#company-details-menu`).append(`
+                <span id="customer-id-span" data-id="${customerData[0].customer_id}"></span>
                 <div style="display: flex;" class="mt-2">
                     <p class="mr-3">Company Name</p>
-                    <input type="text" value="${customerData[0].company_name}">
+                    <input type="text" value="${customerData[0].company_name}" id="company-details-menu-company-name">
                 </div>
                 <div style="display: flex;" class="mt-2">
                     <p class="mr-3">Customer Name</p>
-                    <input type="text" value="${customerData[0].customer_name}">
+                    <input type="text" value="${customerData[0].customer_name}" id="company-details-menu-company-customer-name">
                 </div>
                 <div style="display: flex;" class="mt-2">
                     <p class="mr-3">Phone Number</p>
-                    <input type="number" value="${customerData[0].phone_number}">
+                    <input type="number" value="${customerData[0].phone_number}" id="company-details-menu-company-number">
                 </div>
                 <div style="display: flex;" class="mt-2">
                     <p class="mr-3">Limit</p>
-                    <input type="number" value="${customerData[0].limit}">
+                    <input type="number" value="${customerData[0].limit}" id="company-details-menu-company-limit">
                 </div>
             `)
         }
         $('#company-details-modal').modal('show')
+    })
+}
+
+updateCompanyDetails = () => {
+    let customerID = $(`#customer-id-span`).attr(`data-id`)
+    let companyName = $(`#company-details-menu-company-name`).val()
+    let customerName = $(`#company-details-menu-company-customer-name`).val()
+    let companyNumber = $(`#company-details-menu-company-number`).val()
+    let companyLimit = $(`#company-details-menu-company-limit`).val()
+
+    if(companyName === `` || companyLimit === ``) {
+        showMsgDialog('Company name and Limit are compulsory')
+        return
+    }
+
+    getCompanyByName(companyName, (err, data) => {
+        if(data === undefined) {
+            editCompanyDetails(customerID, companyName, customerName, companyNumber, companyLimit, (err, res) => {
+                showMsgDialog('Customer details updated')
+            })
+        }
+        else {
+            editCompanyDetailsExceptName(customerID, customerName, companyNumber, companyLimit, (err, res) => {
+                showMsgDialog('This company name already exists. Other details have been changed')
+
+            })
+        }
+        $(`#company-details-close-btn`).click()
+        $(`#customer-name-field-customer-details`).val(``)
     })
 }
 
@@ -337,21 +367,21 @@ updateEditSaleHistory = () => {
         for(let i = 0; i < cylinderTypes.length; i++) {
             let oldNumberOfCylinders = $(`#edit-sale-history-table-modal`).attr(`old-number-of-cylinders-${cylinderTypes[i].weight}`)
             let subCostPrice = $(`#edit-${cylinderTypes[i].weight}-sub-cost`).val()
-            
+
             let singleCylinderCostPrice = (subCostPrice / oldNumberOfCylinders)
 
             let newNumberOfCylinders = $(`#edit-${cylinderTypes[i].weight}-kg-number-of-cylinders`).val()
             let newSaleRatePerCylinder = $(`#edit-${cylinderTypes[i].weight}-sub-sale-rate-per-cylinder`).val()
-            
+
             let newSubTotal = newNumberOfCylinders * newSaleRatePerCylinder
             let newSubProfit = newSubTotal - (newNumberOfCylinders * singleCylinderCostPrice)
 
             let newSubCost = newNumberOfCylinders * singleCylinderCostPrice
-            
+
 
             updateSalesDetails(salesID, newNumberOfCylinders, newSubTotal, newSubProfit, customerID, cylinderTypes[i].weight, newSubCost, ()=>{
                 updateMainWindowGUI()
-            })            
+            })
         }
         $('#edit-sale-history-close-btn').click()
     })
