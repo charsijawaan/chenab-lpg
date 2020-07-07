@@ -352,14 +352,14 @@ function getAllPlants(cb) {
 
 function addNewCustomerInDatabase(companyName, customerName, phoneNumber, limit, cb) {
     db.run(`INSERT INTO Customers('company_name', 'customer_name', 'phone_number', 'limit') VALUES(?,?,?,?)`,
-            [companyName, customerName, phoneNumber, limit], (err, res) => {
-        if (err) {
-            console.log(err.message)
-        }
-        else {
-            cb(null, res)
-        }
-    })
+        [companyName, customerName, phoneNumber, limit], (err, res) => {
+            if (err) {
+                console.log(err.message)
+            }
+            else {
+                cb(null, res)
+            }
+        })
 }
 
 function getCustomersByName(companyName, cb) {
@@ -445,14 +445,14 @@ function getLastSalesID(cb) {
 function insertIntoSalesDetails(salesID, cylinderWeight, numberOfCylinders, subTotal, subCost, subProfit, plantID, customerID, cb) {
     db.run(`INSERT INTO SalesDetails('sales_id','cylinder_weight','number_of_cylinders','sub_total','sub_cost', 
             'sub_profit', 'plant_id', 'customer_id') VALUES(?,?,?,?,?,?,?,?)`,
-            [salesID, cylinderWeight, numberOfCylinders, subTotal, subCost, subProfit, plantID, customerID], (err, res) => {
-        if (err) {
-            console.log(err.message)
-        }
-        else {
-            cb(null, res)
-        }
-    })
+        [salesID, cylinderWeight, numberOfCylinders, subTotal, subCost, subProfit, plantID, customerID], (err, res) => {
+            if (err) {
+                console.log(err.message)
+            }
+            else {
+                cb(null, res)
+            }
+        })
 }
 
 function getTotalMoneyInMarket(cb) {
@@ -601,14 +601,14 @@ function getSalesDetailsBySalesID(salesID, cb) {
 function updateSalesDetails(salesID, numberOfCylinders, newSubTotal, newSubProfit, customerID, cylinderWeight, newSubCost, cb) {
     db.run(`UPDATE SalesDetails SET number_of_cylinders = ?, sub_total = ?, sub_profit = ?, sub_cost = ?
             WHERE sales_id = ? AND customer_id = ? AND cylinder_weight = ?`,
-            [numberOfCylinders, newSubTotal, newSubProfit, newSubCost, salesID, customerID, cylinderWeight], (err, res) => {
-        if (err) {
-            console.log(err.message)
-        }
-        else {
-            cb(null, res)
-        }
-    })
+        [numberOfCylinders, newSubTotal, newSubProfit, newSubCost, salesID, customerID, cylinderWeight], (err, res) => {
+            if (err) {
+                console.log(err.message)
+            }
+            else {
+                cb(null, res)
+            }
+        })
 }
 
 function getAllCustomers(cb) {
@@ -748,14 +748,14 @@ function getThisMonthPaymentReceived(cb) {
 
 function insertIntoExpenses(exName, exPrice, exDate, cb) {
     db.run(`INSERT INTO Expenses('expense_name','expense_price','expense_date') VALUES(?,?,?)`,
-            [exName, exPrice, exDate], (err, res) => {
-        if (err) {
-            console.log(err.message)
-        }
-        else {
-            cb(null, res)
-        }
-    })
+        [exName, exPrice, exDate], (err, res) => {
+            if (err) {
+                console.log(err.message)
+            }
+            else {
+                cb(null, res)
+            }
+        })
 }
 
 function getAllSaleDetails(cb) {
@@ -788,12 +788,12 @@ function getAllFillingsPrice(cb) {
             FillingsDetails.total_price FROM Fillings INNER JOIN FillingsDetails ON 
             Fillings.fillings_id = FillingsDetails.fillings_id
             `, [], (err, data) => {
-            if (err) {
-                console.log(err.message)
-            }
-            else {
-                cb(null, data)
-            }
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            cb(null, data)
+        }
     })
 }
 
@@ -1075,6 +1075,38 @@ function getTotalStockMoney(cb) {
         }
         else {
             cb(null, data)
+        }
+    })
+}
+
+function updateCylindersInmarket(plantID, cylinderWeight, numberOfCylinders, salesID, customerID, cb) {
+    db.all(`SELECT * FROM CylindersInMarket WHERE plant_id = ${plantID} AND cylinder_weight = ${cylinderWeight} AND sales_id = ${salesID} AND customer_id = ${salesID}`, [], (err, res) => {
+        if (err) {
+            console.log(err.message)
+        }
+        else {
+            if(res.length == 0) {
+                // insert
+                db.run(`INSERT INTO CylindersInMarket('plant_id','cylinder_weight','number_of_cylinders','sales_id','customer_id') VALUES(?,?,?,?,?)`, [plantID, cylinderWeight, numberOfCylinders, salesID, customerID], (err, res) => {
+                    if (err) {
+                        console.log(err.message)
+                    }
+                    else {
+                        cb(null, res)
+                    }
+                })
+            }
+            else {
+                // update
+                db.run(`UPDATE CylindersInMarket SET number_of_cylinders = number_of_cylinders + ${numberOfCylinders} WHERE plant_id = ${plantID} AND cylinder_weight = ${cylinderWeight} AND sales_id = ${salesID} AND customer_id = ${customerID}`, [], (err, res) => {
+                    if (err) {
+                        console.log(err.message)
+                    }
+                    else {
+                        cb(null, res)
+                    }
+                })
+            }
         }
     })
 }

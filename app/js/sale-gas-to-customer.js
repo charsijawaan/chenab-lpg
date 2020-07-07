@@ -204,8 +204,11 @@ saleGasToCustomer = () => {
                                             let subCost = Number($(`#${cylinderTypes[i].weight}kg-available-gas-rates`).find(":selected").text()) * Number($(`#sale-gas-${cylinderTypes[i].weight}kg-cylinders`).val())
                                             let subProfit = subTotal - subCost
                                             insertIntoSalesDetails(lastRow.sales_id, cylinderTypes[i].weight,
-                                                 numberOfCylinders, subTotal, subCost, subProfit, plantID, customerData[0].customer_id, (err) => {                                                    
-                                                updateMainWindowGUI()
+                                                 numberOfCylinders, subTotal, subCost, subProfit, plantID, customerData[0].customer_id, (err) => {
+                                                updateCylindersInmarket(plantID,  cylinderTypes[i].weight, numberOfCylinders, lastRow.sales_id, customerData[0].customer_id, (err, res) => {
+                                                    updateMainWindowGUI()
+                                                })
+
                                             })                                        
                                         }
                                         showMsgDialog('Cylinder sold to customer')

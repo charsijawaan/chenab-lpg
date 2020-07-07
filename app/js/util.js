@@ -144,8 +144,8 @@ updateBusinessNumberInGUI = () => {
                         totalStockMoney += data.stock_money
 
                         let revenue = totalMarketMoney + cashInHand + totalStockMoney
-                        let investment = totalPlantMoney + totalExpenses
 
+                        let investment = totalPlantMoney
                         business = revenue - investment
 
                         if(business > 0) {
