@@ -1080,14 +1080,14 @@ function getTotalStockMoney(cb) {
 }
 
 function updateCylindersInmarket(plantID, cylinderWeight, numberOfCylinders, salesID, customerID, cb) {
-    db.all(`SELECT * FROM CylindersInMarket WHERE plant_id = ${plantID} AND cylinder_weight = ${cylinderWeight} AND sales_id = ${salesID} AND customer_id = ${salesID}`, [], (err, res) => {
+    db.all(`SELECT * FROM CylindersInMarket WHERE plant_id = ${plantID} AND cylinder_weight = ${cylinderWeight} AND customer_id = ${customerID}`, [], (err, res) => {
         if (err) {
             console.log(err.message)
         }
         else {
             if(res.length == 0) {
                 // insert
-                db.run(`INSERT INTO CylindersInMarket('plant_id','cylinder_weight','number_of_cylinders','sales_id','customer_id') VALUES(?,?,?,?,?)`, [plantID, cylinderWeight, numberOfCylinders, salesID, customerID], (err, res) => {
+                db.run(`INSERT INTO CylindersInMarket('plant_id','cylinder_weight','number_of_cylinders','customer_id') VALUES(?,?,?,?)`, [plantID, cylinderWeight, numberOfCylinders, customerID], (err, res) => {
                     if (err) {
                         console.log(err.message)
                     }
@@ -1098,7 +1098,7 @@ function updateCylindersInmarket(plantID, cylinderWeight, numberOfCylinders, sal
             }
             else {
                 // update
-                db.run(`UPDATE CylindersInMarket SET number_of_cylinders = number_of_cylinders + ${numberOfCylinders} WHERE plant_id = ${plantID} AND cylinder_weight = ${cylinderWeight} AND sales_id = ${salesID} AND customer_id = ${customerID}`, [], (err, res) => {
+                db.run(`UPDATE CylindersInMarket SET number_of_cylinders = number_of_cylinders + ${numberOfCylinders} WHERE plant_id = ${plantID} AND cylinder_weight = ${cylinderWeight} AND customer_id = ${customerID}`, [], (err, res) => {
                     if (err) {
                         console.log(err.message)
                     }

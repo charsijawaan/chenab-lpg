@@ -107,8 +107,8 @@ receiveCylindersButton = () => {
                                 insertIntoCylinderTransactions(customerData[0].customer_id, plantID, cylinderTypes[i].weight, num, date.getTime(), ()=>{
                                     
                                 })
-                                receiveCylinder(num, cylinderTypes[i].weight, customerData[0].customer_id, plantID, (err)=>{                            
-                                })
+                                // receiveCylinder(num, cylinderTypes[i].weight, customerData[0].customer_id, plantID, (err)=>{
+                                // })
                             }
                             
                         })                                                 
